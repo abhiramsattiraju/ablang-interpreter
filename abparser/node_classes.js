@@ -6,7 +6,7 @@ class Node {
     }
 };
 
-// An instance of this class is assigned to the value of a node.
+// An instance of this class is assigned as the value of a node.
 class Operation {
     constructor(leftOperand, operator, rightOperand) {
         this.leftOperand = leftOperand;

@@ -227,7 +227,7 @@ function parseExpression1(token_stream_walker, isRoundBrackets=true) {
 function parseExpression2(expression, isRoundBrackets=true) {
     if(expression.value.length === 1) {
         return new Node(NODE_TYPE_EXPRESSION, [new Operation(
-            expression.value[0].value, operator_types.LEAVE_AS_IS
+            expression.value[0].value, operator_types.LEAVE_AS_IS, null
         )]);
     }
 
@@ -237,8 +237,12 @@ function parseExpression2(expression, isRoundBrackets=true) {
 
     let parsedNodes = [];
 
-    for(let index = 0; index < expression.value.length; index += 2) {
-        //
+    for(let index = 1; index <= expression.value.length - 2; index += 2) {
+        parsedNodes.push(new Operation(
+            expression.value[index - 1].value,
+            getOperatorType(expression.value[index].value),
+            expression.value[index + 1].value
+        ));
     }
 
     return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
