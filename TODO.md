@@ -1,3 +1,3 @@
 # TODO
 
-- Implement parsing into the new operator class objects, in second stage of round bracket parsing.
+- Fix known bug where parsing of expressions with two or more operators is improperly handled.
