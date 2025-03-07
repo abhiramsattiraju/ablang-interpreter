@@ -240,24 +240,7 @@ function parseExpression2(expression, isRoundBrackets=true) {
     let parsedNodes = [];
 
     for(let index = 0; index < expression.value.length; index += 2) {
-        let leftOperand = expression.value[index];
-
-        if(!(leftOperand.type === NODE_TYPE_NUMBER ||
-             leftOperand.type === NODE_TYPE_EXPRESSION)) {
-            exceptions.raiseException(UNSUPPORTED_ERROR,
-                'Operations are supported only with numbers.');
-        }
-
-        if(index === expression.value.length - 1) {
-            parsedNodes.push(new Operation(leftOperand, operator_types.LEAVE_AS_IS));
-            break;
-        }
-
-        let operator = expression.value[index + 1];
-
-        let operation = new Operation(leftOperand,
-            getOperatorType(operator.value));
-        parsedNodes.push(operation);
+        //
     }
 
     return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
@@ -271,6 +254,7 @@ function handleBracketSyntaxErrors(roundBrackets) {
             'parseRoundBrackets2() recieved a non-round-brackets node.');
     }
 
+    // length === 3 is handled by the caller.
     if(roundBrackets.value.length < 3) {
         exceptions.raiseException(SYNTAX_ERROR,
             'Bracket error.');
