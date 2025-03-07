@@ -246,11 +246,47 @@ function parseExpression2(expression, isRoundBrackets=true) {
         return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
     }
 
+    parsedNodes = parseTrinomialsAndBeyond(expression);
+
+    console.log(parsedNodes);
+    return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
+}
+
+/** Does the second stage of expression parsing for expressions with two or
+ ** more operators; i.e. trinomials and beyond.
+ **
+ ** Returns an array of operators.
+ */
+function parseTrinomialsAndBeyond(expression) {
+    let parsedNodes = parseOperation(expression, '/');
+
+    parsedNodes = parsedNodes.concat(parseOperation(expression, '*'));
+    parsedNodes = parsedNodes.concat(parseOperation(expression, '+'));
+    parsedNodes = parsedNodes.concat(parseOperation(expression, '-'));
+
+    return parsedNodes;
+}
+
+/**
+ * 
+ * Parses all occurences of a type of operation in an expression. Returns the
+ * array of operations; only the operations of the specified type.
+ * Expects operations with atleast two operators.
+ * 
+ * @param {Node} expression The expression node to parse.
+ * @param {string} operatorString The operator string for the type of operator
+ * to parse.
+ */
+function parseOperation(expression, operatorString) {
+    let parsedNodes = [];
+
+    let operatorType = getOperatorType(operatorString);
+
     for(let index = 1; index <= expression.value.length - 2; index += 2) {
-        if(expression.value[index].value === '/') {
+        if(expression.value[index].value === operatorString) {
             parsedNodes.push(new Operation(
                 expression.value[index - 1].value,
-                operator_types.DIVISION,
+                operatorType,
                 expression.value[index + 1].value
             ));
         } else {
@@ -258,8 +294,7 @@ function parseExpression2(expression, isRoundBrackets=true) {
         }
     }
 
-    console.log(parsedNodes);
-    return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
+    return parsedNodes;
 }
 
 // Takes a expression node that has been parsed in stage 1 of expression
