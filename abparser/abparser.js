@@ -59,10 +59,9 @@ function parse_node(token_stream_walker, isBracketlessExpression=false) {
         // 7 - Do the subtractions.
 
         let node_stage1 = parseExpression1(token_stream_walker);
-        node = node_stage1.node;
         token_stream_walker = node_stage1.token_stream_walker;
 
-        node = parseExpression2(node);
+        node = parseExpression2(node_stage1.node);
     } else if(isBracketlessExpression) {
         let node_stage1 = parseExpression1(token_stream_walker, false);
         node = node_stage1.node;
