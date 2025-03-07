@@ -1,0 +1,11 @@
+// Lexer token types
+
+module.exports = {
+    TOKEN_TYPE_ROUND_BRACKET: 1,
+    TOKEN_TYPE_NUMBER: 2,
+    TOKEN_TYPE_SEMICOLON: 3,
+    TOKEN_TYPE_STRING: 4,
+    TOKEN_TYPE_OPERATOR: 5,
+    TOKEN_TYPE_KEYWORD: 6,
+    TOKEN_TYPE_NAME: 7,
+};
