@@ -255,7 +255,8 @@ function parseExpression2(expression, isRoundBrackets=true) {
 
         let operator = expression.value[index + 1];
 
-        let operation = new Operation(leftOperand, getOperatorType(operator));
+        let operation = new Operation(leftOperand,
+            getOperatorType(operator.value));
         parsedNodes.push(operation);
     }
 
@@ -291,14 +292,14 @@ function expressionReachedEnd(token_stream_walker, isRoundBrackets) {
     return false;
 }
 
-function getOperatorType(operatorNode) {
-    if(operatorNode.value === '+') {
+function getOperatorType(operatorString) {
+    if(operatorString === '+') {
         return operator_types.ADDITION;
-    } else if(operatorNode.value === '-') {
+    } else if(operatorString === '-') {
         return operator_types.SUBTRACTION;
-    } else if(operatorNode.value === '*') {
+    } else if(operatorString === '*') {
         return operator_types.MULTIPLICATION;
-    } else if(operatorNode.value === '/') {
+    } else if(operatorString === '/') {
         return operator_types.DIVISION;
     } else {
         exceptions.raiseException(REPORT_THIS_BUG,
