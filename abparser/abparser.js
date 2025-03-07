@@ -12,7 +12,6 @@ const {
 const {Node, Operation} = require('./node_classes.js');
 const exceptions = require('../exceptions.js');
 const operator_types = require('./operator_types.js');
-const { get } = require('http');
 
 
 // Parse a token stream (a list of tokens) into an AST (a list of nodes).
