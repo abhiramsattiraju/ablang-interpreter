@@ -226,9 +226,9 @@ function parseExpression1(token_stream_walker, isRoundBrackets=true) {
 // Returns a fully parsed expression node.
 function parseExpression2(expression, isRoundBrackets=true) {
     if(expression.value.length === 1) {
-        return new Node(expression.value[0].type, new Operation(
+        return new Node(NODE_TYPE_EXPRESSION, [new Operation(
             expression.value[0].value, NODE_TYPE_LEAVE_AS_IS
-        ));
+        )]);
     }
 
     if(isRoundBrackets) {
