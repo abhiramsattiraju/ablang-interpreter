@@ -15,12 +15,7 @@ function run(ast) {
 }
 
 function evaluate(expression) {
-    if(expression.type === NODE_TYPE_NUMBER || expression.type === NODE_TYPE_STRING) {
-        console.log('hi');
-        return expression.value;
-    } else {
-        return expression;
-    }
+    return expression;
 }
 
 

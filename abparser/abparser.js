@@ -140,29 +140,14 @@ function parse_keyword(token_stream_walker) {
         node.type = NODE_TYPE_PRINT_STATEMENT;
         node.value = [];
 
-        // Parse all the nodes till the semicolon.
-        while(token_stream_walker.current_element.type !==
-              token_types.TOKEN_TYPE_SEMICOLON) {
-            let hasRoundBrackets = false;
+        let hasRoundBrackets = token_stream_walker.current_element.value ===
+            token_types.TOKEN_TYPE_ROUND_BRACKET;
 
-            if(
-                token_stream_walker.current_element.value ===
-                token_types.TOKEN_TYPE_ROUND_BRACKET
-            ) {
-                hasRoundBrackets = true;
-            }
+        let stage1 = parseExpression1(token_stream_walker, hasRoundBrackets);
+        token_stream_walker = stage1.token_stream_walker;
 
-            let output = parse_node(token_stream_walker, hasRoundBrackets);
-            let new_node = output.node;
+        node.value = parseExpression2(stage1.node, hasRoundBrackets);
 
-            if(new_node.type === NODE_TYPE_PRINT_STATEMENT) {
-                exceptions.raiseException(SYNTAX_ERROR,
-                    'Print statements cannot be printed.');
-            }
-
-            token_stream_walker = output.token_stream_walker;
-            node.value.push(new_node);
-        }
 
         // Skip the semicolon
         token_stream_walker.forward();
