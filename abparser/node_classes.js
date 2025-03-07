@@ -8,9 +8,10 @@ class Node {
 
 // An instance of this class is assigned to the value of a node.
 class Operation {
-    constructor(leftOperand, operator) {
+    constructor(leftOperand, operator, rightOperand) {
         this.leftOperand = leftOperand;
         this.operator = operator;
+        this.rightOperand = rightOperand;
     }
 }
 

@@ -11,6 +11,8 @@ const {
 } = require('./ast_node_types.js');
 const {Node, Operation} = require('./node_classes.js');
 const exceptions = require('../exceptions.js');
+const operator_types = require('./operator_types.js');
+const { get } = require('http');
 
 
 // Parse a token stream (a list of tokens) into an AST (a list of nodes).
@@ -227,7 +229,7 @@ function parseExpression1(token_stream_walker, isRoundBrackets=true) {
 function parseExpression2(expression, isRoundBrackets=true) {
     if(expression.value.length === 1) {
         return new Node(NODE_TYPE_EXPRESSION, [new Operation(
-            expression.value[0].value, NODE_TYPE_LEAVE_AS_IS
+            expression.value[0].value, operator_types.LEAVE_AS_IS
         )]);
     }
 
@@ -247,13 +249,13 @@ function parseExpression2(expression, isRoundBrackets=true) {
         }
 
         if(index === expression.value.length - 1) {
-            parsedNodes.push(new Operation(leftOperand, NODE_TYPE_LEAVE_AS_IS));
+            parsedNodes.push(new Operation(leftOperand, operator_types.LEAVE_AS_IS));
             break;
         }
 
         let operator = expression.value[index + 1];
 
-        let operation = new Operation(leftOperand, operator);
+        let operation = new Operation(leftOperand, getOperatorType(operator));
         parsedNodes.push(operation);
     }
 
@@ -287,6 +289,22 @@ function expressionReachedEnd(token_stream_walker, isRoundBrackets) {
     }
 
     return false;
+}
+
+function getOperatorType(operatorNode) {
+    if(operatorNode.value === '+') {
+        return operator_types.ADDITION;
+    } else if(operatorNode.value === '-') {
+        return operator_types.SUBTRACTION;
+    } else if(operatorNode.value === '*') {
+        return operator_types.MULTIPLICATION;
+    } else if(operatorNode.value === '/') {
+        return operator_types.DIVISION;
+    } else {
+        exceptions.raiseException(REPORT_THIS_BUG,
+            'An operator was invalidly parsed.'
+        );
+    }
 }
 
 
