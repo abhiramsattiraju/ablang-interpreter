@@ -11,4 +11,3 @@ print 123;
 print 123456789;
 print 53 + 512;
 print "heloo";
-print "namaskaram";
