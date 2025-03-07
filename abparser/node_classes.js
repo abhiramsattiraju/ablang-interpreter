@@ -6,8 +6,9 @@ class Node {
     }
 };
 
-// An instance of this class is assigned to array elements in an expression
-// node's value array.
+/** An instance of this class is assigned to array elements in an expression
+  * node's value array.
+ **/
 class Operation {
     constructor(leftOperand, operator, rightOperand) {
         this.leftOperand = leftOperand;
