@@ -237,14 +237,28 @@ function parseExpression2(expression, isRoundBrackets=true) {
 
     let parsedNodes = [];
 
-    for(let index = 1; index <= expression.value.length - 2; index += 2) {
+    if(expression.value.length === 3) {
         parsedNodes.push(new Operation(
-            expression.value[index - 1].value,
-            getOperatorType(expression.value[index].value),
-            expression.value[index + 1].value
+            expression.value[0].value, getOperatorType(expression.value[1].value),
+            expression.value[2].value
         ));
+
+        return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
     }
 
+    for(let index = 1; index <= expression.value.length - 2; index += 2) {
+        if(expression.value[index].value === '/') {
+            parsedNodes.push(new Operation(
+                expression.value[index - 1].value,
+                operator_types.DIVISION,
+                expression.value[index + 1].value
+            ));
+        } else {
+            continue;
+        }
+    }
+
+    console.log(parsedNodes);
     return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
 }
 
