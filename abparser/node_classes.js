@@ -8,6 +8,8 @@ class Node {
 
 /** An instance of this class is assigned to array elements in an expression
   * node's value array.
+  * 
+  * LEAVE_AS_IS operations have their right operand as null.
  **/
 class Operation {
     constructor(leftOperand, operator, rightOperand) {
