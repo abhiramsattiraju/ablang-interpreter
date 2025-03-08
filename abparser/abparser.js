@@ -281,14 +281,14 @@ nor Operation.'
 }
 
 /** Does the second stage of expression parsing for expressions with two or
- ** more operators; i.e. trinomials and beyond.
- **
- ** Examples of trinomials:
- ** 1 + 2 - 3
- ** 1 * 2 - 3 (Although 1*2 is one term in mathematics, this function considers
- ** it as two terms.)
- **
- ** Returns an array of operations.
+  * more operators; i.e. trinomials and beyond.
+  *
+  * Examples of trinomials:
+  * 1 + 2 - 3
+  * 1 * 2 - 3 (Although 1*2 is one term in mathematics, this function considers
+  * it as two terms.)
+  *
+  * Returns an array of operations.
  */
 function parseTrinomialsAndBeyond(expression) {
     parseOperation(expression, '/');
