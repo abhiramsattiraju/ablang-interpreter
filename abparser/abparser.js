@@ -283,7 +283,7 @@ nor Operation.'
 /** Does the second stage of expression parsing for expressions with two or
  ** more operators; i.e. trinomials and beyond.
  **
- ** Returns an array of operators.
+ ** Returns an array of operations.
  */
 function parseTrinomialsAndBeyond(expression) {
     parseOperation(expression, '/');
