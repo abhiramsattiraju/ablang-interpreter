@@ -12,6 +12,7 @@ const {
 const {Node, Operation} = require('./node_classes.js');
 const exceptions = require('../exceptions.js');
 const operator_types = require('./operator_types.js');
+const exp = require('constants');
 
 
 // Parse a token stream (a list of tokens) into an AST (a list of nodes).
@@ -238,9 +239,34 @@ function parseExpression2(expression, isRoundBrackets=true) {
     let parsedNodes = [];
 
     if(expression.value.length === 3) {
+        let leftOperand;
+        let rightOperand;
+
+        if(expression.value[0] instanceof Operation) {
+            leftOperand = [expression.value[0]];
+        } else if(expression.value[0] instanceof Node) {
+            leftOperand = expression.value[0].value;
+        } else {
+            exceptions.raiseException(REPORT_THIS_BUG,
+'parseExpression2() recieved a left operand that was not an instance of Node or \
+Operation.'
+            );
+        }
+
+        if(expression.value[2] instanceof Operation) {
+            rightOperand = [expression.value[2]];
+        } else if(expression.value[2] instanceof Node) {
+            rightOperand = expression.value[2].value;
+        } else {
+            exceptions.raiseException(REPORT_THIS_BUG,
+'parseExpression2() recieved a right operand that was not an instance of Node or \
+Operation.'
+            );
+        }
+
         parsedNodes.push(new Operation(
-            expression.value[0].value, getOperatorType(expression.value[1].value),
-            expression.value[2].value
+            leftOperand, getOperatorType(expression.value[1].value),
+            rightOperand
         ));
 
         return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
@@ -248,7 +274,6 @@ function parseExpression2(expression, isRoundBrackets=true) {
 
     parsedNodes = parseTrinomialsAndBeyond(expression);
 
-    console.log(parsedNodes);
     return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
 }
 
@@ -258,43 +283,70 @@ function parseExpression2(expression, isRoundBrackets=true) {
  ** Returns an array of operators.
  */
 function parseTrinomialsAndBeyond(expression) {
-    let parsedNodes = parseOperation(expression, '/');
+    parseOperation(expression, '/');
 
-    parsedNodes = parsedNodes.concat(parseOperation(expression, '*'));
-    parsedNodes = parsedNodes.concat(parseOperation(expression, '+'));
-    parsedNodes = parsedNodes.concat(parseOperation(expression, '-'));
+    parseOperation(expression, '*');
+    parseOperation(expression, '+');
+    parseOperation(expression, '-');
 
-    return parsedNodes;
+    return expression.value;
 }
 
 /**
  * 
- * Parses all occurences of a type of operation in an expression. Returns the
- * array of operations; only the operations of the specified type.
- * Expects operations with atleast two operators.
+ * Parses all occurences of a type of operation in an expression that has been
+ * parsed in stage 1 of expression parsing.
+ * Replaces the occurences of the operation with Operation objects, in the
+ * expression's value array.
  * 
  * @param {Node} expression The expression node to parse.
  * @param {string} operatorString The operator string for the type of operator
  * to parse.
  */
 function parseOperation(expression, operatorString) {
-    let parsedNodes = [];
-
     let operatorType = getOperatorType(operatorString);
 
     for(let index = 1; index <= expression.value.length - 2; index += 2) {
         if(expression.value[index].value === operatorString) {
-            parsedNodes.push(new Operation(
-                expression.value[index - 1].value,
+            let leftOperand;
+            let rightOperand;
+
+            if(expression.value[index - 1] instanceof Operation) {
+                leftOperand = [expression.value[index - 1]];
+            } else if(expression.value[index - 1] instanceof Node) {
+                leftOperand = expression.value[index - 1].value;
+            } else {
+                exceptions.raiseException(REPORT_THIS_BUG,
+'parseOperation recieved a left operand that was not an instance of Node or \
+Operation.'
+                );
+            }
+
+            if(expression.value[index + 1] instanceof Operation) {
+                rightOperand = [expression.value[index + 1]];
+            } else if(expression.value[index + 1] instanceof Node) {
+                rightOperand = expression.value[index + 1].value;
+            } else {
+                exceptions.raiseException(REPORT_THIS_BUG,
+'parseOperation recieved a right operand that was not an instance of Node or \
+Operation.'
+                );
+            }
+
+            expression.value[index] = new Operation(
+                leftOperand,
                 operatorType,
-                expression.value[index + 1].value
-            ));
+                rightOperand
+            );
+
+            expression.value.splice(index - 1, 1);
+            expression.value.splice(index, 1);
+
+            index--;
         } else {
             continue;
         }
     }
-
-    return parsedNodes;
 }
 
 // Takes a expression node that has been parsed in stage 1 of expression

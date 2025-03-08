@@ -19,6 +19,7 @@ function evaluate(expression) {
     let result;
 
     expression.value.forEach((operation, index) => {
+        console.log(operation);
         if(operation.operator == operator_types.LEAVE_AS_IS) {
             result = operation.leftOperand;
         } else {
