@@ -239,30 +239,8 @@ function parseExpression2(expression, isRoundBrackets=true) {
     let parsedNodes = [];
 
     if(expression.value.length === 3) {
-        let leftOperand;
-        let rightOperand;
-
-        if(expression.value[0] instanceof Operation) {
-            leftOperand = [expression.value[0]];
-        } else if(expression.value[0] instanceof Node) {
-            leftOperand = expression.value[0].value;
-        } else {
-            exceptions.raiseException(REPORT_THIS_BUG,
-'parseExpression2() recieved a left operand that was not an instance of Node or \
-Operation.'
-            );
-        }
-
-        if(expression.value[2] instanceof Operation) {
-            rightOperand = [expression.value[2]];
-        } else if(expression.value[2] instanceof Node) {
-            rightOperand = expression.value[2].value;
-        } else {
-            exceptions.raiseException(REPORT_THIS_BUG,
-'parseExpression2() recieved a right operand that was not an instance of Node or \
-Operation.'
-            );
-        }
+        let leftOperand = intoOperand(expression.value[0]);
+        let rightOperand = intoOperand(expression.value[2]);
 
         parsedNodes.push(new Operation(
             leftOperand, getOperatorType(expression.value[1].value),
@@ -275,6 +253,31 @@ Operation.'
     parsedNodes = parseTrinomialsAndBeyond(expression);
 
     return new Node(NODE_TYPE_EXPRESSION, parsedNodes);
+}
+
+/**
+ * Converts a Node or Operation into a format suitable for use as an operand.
+ * 
+ * @param {(Node|Operation)} nodeOrOperation - The node or operation to convert
+ * @returns A single-element array containing the Operation if given an
+ * Operation, or a Node's value if given a Node.
+ * @throws {Error} If the input is neither a Node nor an Operation
+ * 
+ * Example:
+ * - Node {value: 5} -> [5]
+ * - Operation object -> [Operation object]
+ */
+function intoOperand(nodeOrOperation) {
+    if(nodeOrOperation instanceof Node) {
+        return nodeOrOperation.value;
+    } else if(nodeOrOperation instanceof Operation) {
+        return [nodeOrOperation];
+    } else {
+        exceptions.raiseException(REPORT_THIS_BUG,
+            'intoOperand() recieved a node that was neither an instance of Node \
+nor Operation.'
+        );
+    }
 }
 
 /** Does the second stage of expression parsing for expressions with two or
@@ -308,30 +311,8 @@ function parseOperation(expression, operatorString) {
 
     for(let index = 1; index <= expression.value.length - 2; index += 2) {
         if(expression.value[index].value === operatorString) {
-            let leftOperand;
-            let rightOperand;
-
-            if(expression.value[index - 1] instanceof Operation) {
-                leftOperand = [expression.value[index - 1]];
-            } else if(expression.value[index - 1] instanceof Node) {
-                leftOperand = expression.value[index - 1].value;
-            } else {
-                exceptions.raiseException(REPORT_THIS_BUG,
-'parseOperation recieved a left operand that was not an instance of Node or \
-Operation.'
-                );
-            }
-
-            if(expression.value[index + 1] instanceof Operation) {
-                rightOperand = [expression.value[index + 1]];
-            } else if(expression.value[index + 1] instanceof Node) {
-                rightOperand = expression.value[index + 1].value;
-            } else {
-                exceptions.raiseException(REPORT_THIS_BUG,
-'parseOperation recieved a right operand that was not an instance of Node or \
-Operation.'
-                );
-            }
+            let leftOperand = intoOperand(expression.value[index - 1]);
+            let rightOperand = intoOperand(expression.value[index + 1]);
 
             expression.value[index] = new Operation(
                 leftOperand,
