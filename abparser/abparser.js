@@ -139,7 +139,6 @@ function parse_keyword(token_stream_walker) {
         token_stream_walker.forward();  // Skipt the 'print' keyword.
 
         node.type = NODE_TYPE_PRINT_STATEMENT;
-        node.value = [];
 
         let hasRoundBrackets = token_stream_walker.current_element.value ===
             token_types.TOKEN_TYPE_ROUND_BRACKET;
