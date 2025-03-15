@@ -1,1 +1,1 @@
-node ablang.js program.abl
+node ablang.js tests/program.abl
