@@ -9,7 +9,7 @@ const NAME_PERMITTED_FIRST_CHARS =
     '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const NAME_ALL_PERMITTED_CHARS =
     '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-const WHITESPACES = ' \t\n';
+const WHITESPACES = ' \t\n\r';
 const KEYWORDS = ['print'];
 
 
@@ -129,7 +129,7 @@ function lex(source_code) {
         // Invalid character.
         else {
             exceptions.raiseException(exceptions.SYNTAX_ERROR,
-                `Invalid character ${source_code_walker.current_element}`);
+                `Invalid character "${source_code_walker.current_element}"`);
         }
     }
 
