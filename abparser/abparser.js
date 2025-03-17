@@ -328,8 +328,6 @@ function parseOperation(expression, operatorString) {
             expression.value.splice(index, 1);
 
             index--;
-        } else {
-            continue;
         }
     }
 }
