@@ -12,5 +12,6 @@ module.exports = {
     EXCEPTION: "Exception",
     SYNTAX_ERROR: "Syntax error",
     REPORT_THIS_BUG: "Report this bug",
-    UNSUPPORTED_ERROR: 'Unsupported'
+    UNSUPPORTED_ERROR: 'Unsupported',
+    RUNTIME_ERROR: 'Runtime error',
 }
