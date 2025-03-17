@@ -293,8 +293,7 @@ function parseTrinomialsAndBeyond(expression) {
     parseOperation(expression, '/');
 
     parseOperation(expression, '*');
-    parseOperation(expression, '+');
-    parseOperation(expression, '-');
+    parseAdditionAndSubtraction(expression);
 
     return expression.value;
 }
@@ -313,7 +312,7 @@ function parseTrinomialsAndBeyond(expression) {
 function parseOperation(expression, operatorString) {
     let operatorType = getOperatorType(operatorString);
 
-    for(let index = 1; index <= expression.value.length - 2; index += 2) {
+    for(let index = 1; index <= expression.value.length - 2; index++) {
         if(expression.value[index].value === operatorString) {
             let leftOperand = intoOperand(expression.value[index - 1]);
             let rightOperand = intoOperand(expression.value[index + 1]);
@@ -321,6 +320,35 @@ function parseOperation(expression, operatorString) {
             expression.value[index] = new Operation(
                 leftOperand,
                 operatorType,
+                rightOperand
+            );
+
+            expression.value.splice(index - 1, 1);
+            expression.value.splice(index, 1);
+
+            index--;
+        }
+    }
+}
+
+/**
+ * Parses addition *and* subtraction operations in left-to-right order.
+ * Behaves similarly to parseOperation(), but it does not take an
+ * operator string.
+ * 
+ * @param {Node} expression The expression node to parse.
+ */
+function parseAdditionAndSubtraction(expression) {
+    for(let index = 1; index <= expression.value.length - 2; index++) {
+        let operator = expression.value[index].value;
+        
+        if(operator === '+' || operator === '-') {
+            let leftOperand = intoOperand(expression.value[index - 1]);
+            let rightOperand = intoOperand(expression.value[index + 1]);
+
+            expression.value[index] = new Operation(
+                leftOperand,
+                getOperatorType(operator),
                 rightOperand
             );
 
