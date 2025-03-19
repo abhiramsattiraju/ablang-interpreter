@@ -4,7 +4,7 @@ const exceptions = require('./exceptions.js');
 
 
 const DIGITS = '1234567890';
-const OPERATORS = '+-*/';
+const OPERATORS = ['+', '-', '*', '/', '>', '<', '>=', '<=', '==', '!='];
 const NAME_PERMITTED_FIRST_CHARS =
     '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const NAME_ALL_PERMITTED_CHARS =
@@ -86,7 +86,8 @@ function lex(source_code) {
         }
 
         // Operator.
-        else if(OPERATORS.includes(source_code_walker.current_element)) {
+
+        else if(isStartOfOperator(source_code_walker.current_element)) {
             token_stream.push(
                 new Token(
                     token_types.TOKEN_TYPE_OPERATOR,
@@ -134,6 +135,18 @@ function lex(source_code) {
     }
 
     return token_stream;
+}
+
+function isStartOfOperator(character) {
+    let foundOperator = false;
+
+    OPERATORS.forEach((operator) => {
+        if(operator[0] === character) {
+            foundOperator = true;
+        }
+    });
+
+    return foundOperator;
 }
 
 
