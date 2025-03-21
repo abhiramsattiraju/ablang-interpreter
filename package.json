@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "npm test"
+    "test": "jest --verbose"
   },
   "keywords": [
     "ablang",
