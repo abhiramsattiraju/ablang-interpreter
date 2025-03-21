@@ -15,5 +15,8 @@
     "interpreter"
   ],
   "author": "Abhiram Sattiraju",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "jest": "^29.7.0"
+  }
 }
