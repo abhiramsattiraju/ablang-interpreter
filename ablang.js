@@ -24,5 +24,10 @@ Usage: node ablang.js <program file>'
     runner(ast);
 }
 
+// A dummy function to test the test suite.
+function add(x, y) {
+    return x + y;
+}
+
 
 main();
