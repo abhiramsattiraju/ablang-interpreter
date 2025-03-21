@@ -1,0 +1,19 @@
+{
+  "name": "ablang-nodejs-interpreter",
+  "version": "0.0.1",
+  "description": "The interpreter for ABLang, written in NodeJS.",
+  "main": "ablang.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "ablang",
+    "nodejs",
+    "interpreter"
+  ],
+  "author": "Abhiram Sattiraju",
+  "license": "UNLICENSED"
+}
