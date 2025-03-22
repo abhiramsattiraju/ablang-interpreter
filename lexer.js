@@ -10,13 +10,7 @@ const NAME_ALL_PERMITTED_CHARS =
     '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const WHITESPACES = ' \t\n\r';
 const KEYWORDS = ['print'];
-
-class Token {
-    constructor(type, value) {
-        this.type = type;
-        this.value = value;
-    }
-}
+const Token = require('./token_class.js');
 
 // Takes ABLang source code in a string and returns a token stream or a list of
 // tokens.

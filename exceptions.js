@@ -1,8 +1,7 @@
 // The exceptions functionality.
 
 function raiseException(type, message) {
-    console.error(`${type}: ${message}`);
-    process.exit(1);
+    throw new Error(`${type}: ${message}`);
 }
 
 module.exports = {
