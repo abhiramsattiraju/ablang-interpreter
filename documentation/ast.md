@@ -79,6 +79,8 @@ For example, if the number 5 was the left operand, it `leftOperand` would not be
 
 Likewise, if a string `"hi"` was the left operand, `leftOperand` would be `"hi"`.
 
+If a round-bracketed expression was to be an operand, it would be stored as an array of `Operation` objects.
+
 ### Operator Types
 - `LEAVE_AS_IS`: Keep the value unchanged.
 - `ADDITION`
