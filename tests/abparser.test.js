@@ -1,4 +1,4 @@
-const { parse, parse_node } = require('../abparser/abparser.js');
+const { parse } = require('../abparser/abparser.js');
 const { Node, Operation } = require('../abparser/node_classes.js');
 const {
     TOKEN_TYPE_ROUND_BRACKET,
