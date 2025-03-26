@@ -1,5 +1,5 @@
 let StreamWalker = require('./stream_walker.js');
-const token_types = require('./token_types.js');
+const tokenTypes = require('./token_types.js');
 const exceptions = require('./exceptions.js');
 
 const DIGITS = '1234567890';
@@ -15,111 +15,111 @@ const Token = require('./token_class.js');
 // Takes ABLang source code in a string and returns a token stream or a list of
 // tokens.
 function lex(source_code) {
-    let source_code_walker = new StreamWalker(source_code);
+    let sourceCodeWalker = new StreamWalker(source_code);
     let token_stream = [];
 
     // Loop through the source code.
-    while (!source_code_walker.reached_end()) {
-        if (source_code_walker.current_element === '(') {
-            lexRoundBracket(source_code_walker, token_stream, '(');
-        } else if (source_code_walker.current_element === ')') {
-            lexRoundBracket(source_code_walker, token_stream, ')');
-        } else if (DIGITS.includes(source_code_walker.current_element)) {
-            lexNumber(source_code_walker, token_stream);
-        } else if (source_code_walker.current_element === ';') {
-            lexSemicolon(source_code_walker, token_stream);
-        } else if (source_code_walker.current_element === '"') {
-            lexString(source_code_walker, token_stream);
-        } else if (isStartOfOperator(source_code_walker.current_element)) {
-            lexOperator(source_code_walker, token_stream);
+    while (!sourceCodeWalker.reached_end()) {
+        if (sourceCodeWalker.currentElement === '(') {
+            lexRoundBracket(sourceCodeWalker, token_stream, '(');
+        } else if (sourceCodeWalker.currentElement === ')') {
+            lexRoundBracket(sourceCodeWalker, token_stream, ')');
+        } else if (DIGITS.includes(sourceCodeWalker.currentElement)) {
+            lexNumber(sourceCodeWalker, token_stream);
+        } else if (sourceCodeWalker.currentElement === ';') {
+            lexSemicolon(sourceCodeWalker, token_stream);
+        } else if (sourceCodeWalker.currentElement === '"') {
+            lexString(sourceCodeWalker, token_stream);
+        } else if (isStartOfOperator(sourceCodeWalker.currentElement)) {
+            lexOperator(sourceCodeWalker, token_stream);
         } else if (NAME_PERMITTED_FIRST_CHARS.includes(
-            source_code_walker.current_element
+            sourceCodeWalker.currentElement
         )) {
-            lexNameOrKeyword(source_code_walker, token_stream);
-        } else if (WHITESPACES.includes(source_code_walker.current_element)) {
-            source_code_walker.forward();
+            lexNameOrKeyword(sourceCodeWalker, token_stream);
+        } else if (WHITESPACES.includes(sourceCodeWalker.currentElement)) {
+            sourceCodeWalker.forward();
         } else {
             exceptions.raiseException(exceptions.SYNTAX_ERROR,
-                `Invalid character "${source_code_walker.current_element}"`);
+                `Invalid character "${sourceCodeWalker.currentElement}"`);
         }
     }
 
     return token_stream;
 }
 
-function lexRoundBracket(source_code_walker, token_stream, bracket) {
+function lexRoundBracket(sourceCodeWalker, token_stream, bracket) {
     token_stream.push(new Token(
-        token_types.TOKEN_TYPE_ROUND_BRACKET, bracket
+        tokenTypes.TOKEN_TYPE_ROUND_BRACKET, bracket
     ));
-    source_code_walker.forward();
+    sourceCodeWalker.forward();
 }
 
-function lexNumber(source_code_walker, token_stream) {
+function lexNumber(sourceCodeWalker, token_stream) {
     let num = '';
-    while (DIGITS.includes(source_code_walker.current_element) &&
-        (!source_code_walker.reached_end())) {
-        num += source_code_walker.current_element;
-        source_code_walker.forward();
+    while (DIGITS.includes(sourceCodeWalker.currentElement) &&
+        (!sourceCodeWalker.reached_end())) {
+        num += sourceCodeWalker.currentElement;
+        sourceCodeWalker.forward();
     }
     token_stream.push(new Token(
-        token_types.TOKEN_TYPE_NUMBER, parseInt(num)
+        tokenTypes.TOKEN_TYPE_NUMBER, parseInt(num)
     ));
 }
 
-function lexSemicolon(source_code_walker, token_stream) {
+function lexSemicolon(sourceCodeWalker, token_stream) {
     token_stream.push(new Token(
-        token_types.TOKEN_TYPE_SEMICOLON, ';'
+        tokenTypes.TOKEN_TYPE_SEMICOLON, ';'
     ));
-    source_code_walker.forward();
+    sourceCodeWalker.forward();
 }
 
-function lexString(source_code_walker, token_stream) {
+function lexString(sourceCodeWalker, token_stream) {
     let string = '';
-    source_code_walker.forward();
-    while (source_code_walker.current_element !== '"') {
-        if (source_code_walker.reached_end()) {
+    sourceCodeWalker.forward();
+    while (sourceCodeWalker.currentElement !== '"') {
+        if (sourceCodeWalker.reached_end()) {
             exceptions.raiseException(exceptions.SYNTAX_ERROR,
                 'Unterminated string.');
         }
 
-        string += source_code_walker.current_element;
-        source_code_walker.forward();
+        string += sourceCodeWalker.currentElement;
+        sourceCodeWalker.forward();
     }
-    source_code_walker.forward();
+    sourceCodeWalker.forward();
     token_stream.push(new Token(
-        token_types.TOKEN_TYPE_STRING, string
+        tokenTypes.TOKEN_TYPE_STRING, string
     ));
 }
 
-function lexOperator(source_code_walker, token_stream) {
+function lexOperator(sourceCodeWalker, token_stream) {
     token_stream.push(
         new Token(
-            token_types.TOKEN_TYPE_OPERATOR,
-            source_code_walker.current_element
+            tokenTypes.TOKEN_TYPE_OPERATOR,
+            sourceCodeWalker.currentElement
         )
     );
-    source_code_walker.forward();
+    sourceCodeWalker.forward();
 }
 
-function lexNameOrKeyword(source_code_walker, token_stream) {
+function lexNameOrKeyword(sourceCodeWalker, token_stream) {
     let name_name = '';
     while (
         NAME_ALL_PERMITTED_CHARS.includes(
-            source_code_walker.current_element
-        ) && (!source_code_walker.reached_end())
+            sourceCodeWalker.currentElement
+        ) && (!sourceCodeWalker.reached_end())
     ) {
-        name_name += source_code_walker.current_element;
-        source_code_walker.forward();
+        name_name += sourceCodeWalker.currentElement;
+        sourceCodeWalker.forward();
     }
 
     if (KEYWORDS.includes(name_name)) {
         token_stream.push(new Token(
-            token_types.TOKEN_TYPE_KEYWORD, name_name
+            tokenTypes.TOKEN_TYPE_KEYWORD, name_name
         ));
         return;
     }
     token_stream.push(new Token(
-        token_types.TOKEN_TYPE_NAME, name_name
+        tokenTypes.TOKEN_TYPE_NAME, name_name
     ));
 }
 

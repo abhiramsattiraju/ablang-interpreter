@@ -1,4 +1,4 @@
-const testConfig = require('./testConfig.js');
+const testConfig = require('./test_config.js');
 const { exec } = require('child_process');
 const { Node, Operation } = require('../abparser/node_classes.js');
 const {

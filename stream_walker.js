@@ -5,7 +5,7 @@ class StreamWalker {
     constructor(stream) {
         this.stream = stream;
         this.index = 0;
-        this.current_element = this.stream[this.index];
+        this.currentElement = this.stream[this.index];
         this.length = this.stream.length;
     }
 
@@ -19,7 +19,7 @@ class StreamWalker {
 
         this.index += steps;
         if(this.index < this.length) {
-            this.current_element = this.stream[this.index];
+            this.currentElement = this.stream[this.index];
         }
     }
 
@@ -33,7 +33,7 @@ class StreamWalker {
     get_previous_element() {
         if(this.index < 1) {
             exceptions.raiseException(exceptions.SYNTAX_ERROR,
-                `There should be something before ${this.current_element}`);
+                `There should be something before ${this.currentElement}`);
         }
 
         return this.stream[this.index - 1];
