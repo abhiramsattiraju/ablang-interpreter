@@ -16,26 +16,26 @@ const Token = require('./token_class.js');
 // tokens.
 function lex(source_code) {
     let sourceCodeWalker = new StreamWalker(source_code);
-    let token_stream = [];
+    let tokenStream = [];
 
     // Loop through the source code.
     while (!sourceCodeWalker.reached_end()) {
         if (sourceCodeWalker.currentElement === '(') {
-            lexRoundBracket(sourceCodeWalker, token_stream, '(');
+            lexRoundBracket(sourceCodeWalker, tokenStream, '(');
         } else if (sourceCodeWalker.currentElement === ')') {
-            lexRoundBracket(sourceCodeWalker, token_stream, ')');
+            lexRoundBracket(sourceCodeWalker, tokenStream, ')');
         } else if (DIGITS.includes(sourceCodeWalker.currentElement)) {
-            lexNumber(sourceCodeWalker, token_stream);
+            lexNumber(sourceCodeWalker, tokenStream);
         } else if (sourceCodeWalker.currentElement === ';') {
-            lexSemicolon(sourceCodeWalker, token_stream);
+            lexSemicolon(sourceCodeWalker, tokenStream);
         } else if (sourceCodeWalker.currentElement === '"') {
-            lexString(sourceCodeWalker, token_stream);
+            lexString(sourceCodeWalker, tokenStream);
         } else if (isStartOfOperator(sourceCodeWalker.currentElement)) {
-            lexOperator(sourceCodeWalker, token_stream);
+            lexOperator(sourceCodeWalker, tokenStream);
         } else if (NAME_PERMITTED_FIRST_CHARS.includes(
             sourceCodeWalker.currentElement
         )) {
-            lexNameOrKeyword(sourceCodeWalker, token_stream);
+            lexNameOrKeyword(sourceCodeWalker, tokenStream);
         } else if (WHITESPACES.includes(sourceCodeWalker.currentElement)) {
             sourceCodeWalker.forward();
         } else {
@@ -44,36 +44,36 @@ function lex(source_code) {
         }
     }
 
-    return token_stream;
+    return tokenStream;
 }
 
-function lexRoundBracket(sourceCodeWalker, token_stream, bracket) {
-    token_stream.push(new Token(
+function lexRoundBracket(sourceCodeWalker, tokenStream, bracket) {
+    tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_ROUND_BRACKET, bracket
     ));
     sourceCodeWalker.forward();
 }
 
-function lexNumber(sourceCodeWalker, token_stream) {
+function lexNumber(sourceCodeWalker, tokenStream) {
     let num = '';
     while (DIGITS.includes(sourceCodeWalker.currentElement) &&
         (!sourceCodeWalker.reached_end())) {
         num += sourceCodeWalker.currentElement;
         sourceCodeWalker.forward();
     }
-    token_stream.push(new Token(
+    tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_NUMBER, parseInt(num)
     ));
 }
 
-function lexSemicolon(sourceCodeWalker, token_stream) {
-    token_stream.push(new Token(
+function lexSemicolon(sourceCodeWalker, tokenStream) {
+    tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_SEMICOLON, ';'
     ));
     sourceCodeWalker.forward();
 }
 
-function lexString(sourceCodeWalker, token_stream) {
+function lexString(sourceCodeWalker, tokenStream) {
     let string = '';
     sourceCodeWalker.forward();
     while (sourceCodeWalker.currentElement !== '"') {
@@ -86,13 +86,13 @@ function lexString(sourceCodeWalker, token_stream) {
         sourceCodeWalker.forward();
     }
     sourceCodeWalker.forward();
-    token_stream.push(new Token(
+    tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_STRING, string
     ));
 }
 
-function lexOperator(sourceCodeWalker, token_stream) {
-    token_stream.push(
+function lexOperator(sourceCodeWalker, tokenStream) {
+    tokenStream.push(
         new Token(
             tokenTypes.TOKEN_TYPE_OPERATOR,
             sourceCodeWalker.currentElement
@@ -101,7 +101,7 @@ function lexOperator(sourceCodeWalker, token_stream) {
     sourceCodeWalker.forward();
 }
 
-function lexNameOrKeyword(sourceCodeWalker, token_stream) {
+function lexNameOrKeyword(sourceCodeWalker, tokenStream) {
     let name_name = '';
     while (
         NAME_ALL_PERMITTED_CHARS.includes(
@@ -113,12 +113,12 @@ function lexNameOrKeyword(sourceCodeWalker, token_stream) {
     }
 
     if (KEYWORDS.includes(name_name)) {
-        token_stream.push(new Token(
+        tokenStream.push(new Token(
             tokenTypes.TOKEN_TYPE_KEYWORD, name_name
         ));
         return;
     }
-    token_stream.push(new Token(
+    tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_NAME, name_name
     ));
 }
