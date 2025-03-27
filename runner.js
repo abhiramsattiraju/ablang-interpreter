@@ -30,7 +30,7 @@ function evaluate(expressionValue) {
             operation.rightOperand = evaluate(operation.rightOperand);
         }
 
-        switch (operation.operator) {
+        switch(operation.operator) {
             case operator_types.LEAVE_AS_IS:
                 result = operation.leftOperand;
                 break;
