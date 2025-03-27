@@ -24,6 +24,6 @@ print "";
 print 56 >= 56;
 print 56 <= 56;
 
-print ""
-print true;
-print false;
+print "";
+print True;
+print (False);

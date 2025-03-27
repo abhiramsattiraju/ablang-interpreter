@@ -7,6 +7,7 @@ const {
     NODE_TYPE_OPERATOR,
     NODE_TYPE_STRING,
     NODE_TYPE_EXPRESSION,
+    NODE_TYPE_BOOLEAN
 } = require('./ast_node_types.js');
 const {Node, Operation} = require('./node_classes.js');
 const exceptions = require('../exceptions.js');
@@ -149,6 +150,16 @@ function parseKeyword(tokenStreamWalker) {
 
         // Skip the semicolon
         tokenStreamWalker.forward();
+    } else if(tokenStreamWalker.currentElement.value === 'True') {
+        tokenStreamWalker.forward();
+
+        node.type = NODE_TYPE_BOOLEAN;
+        node.value = true;
+    } else if(tokenStreamWalker.currentElement.value === 'False') {
+        tokenStreamWalker.forward();
+
+        node.type = NODE_TYPE_BOOLEAN;
+        node.value = false;
     }
 
     // Invalid keyword
@@ -416,8 +427,7 @@ function getOperatorType(operatorString) {
         return operator_types.NOT_EQUAL;
     } else {
         exceptions.raiseException(REPORT_THIS_BUG,
-            'An operator was invalidly parsed.'
-        );
+            `An operator was invalidly parsed: ${operatorString}`);
     }
 }
 
