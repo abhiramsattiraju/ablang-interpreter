@@ -144,4 +144,8 @@ describe('Lexer Tests', () => {
     it('Should throw an error for invalid numbers', () => {
         expect(() => {lex('123a');}).toThrow(Error);
     });
+
+    it('Should throw an error for unterminated strings', () => {
+        expect(() => {lex('"hello');}).toThrow(Error);
+    });
 });
