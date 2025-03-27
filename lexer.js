@@ -138,7 +138,8 @@ function isCharacterOfOperator(character) {
 
 function lexNameOrKeyword(sourceCodeWalker, tokenStream) {
     let nameName = '';
-    while (
+
+    while(
         NAME_ALL_PERMITTED_CHARS.includes(
             sourceCodeWalker.currentElement
         ) && (!sourceCodeWalker.reached_end())
@@ -147,12 +148,13 @@ function lexNameOrKeyword(sourceCodeWalker, tokenStream) {
         sourceCodeWalker.forward();
     }
 
-    if (KEYWORDS.includes(nameName)) {
+    if(KEYWORDS.includes(nameName)) {
         tokenStream.push(new Token(
             tokenTypes.TOKEN_TYPE_KEYWORD, nameName
         ));
         return;
     }
+
     tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_NAME, nameName
     ));
