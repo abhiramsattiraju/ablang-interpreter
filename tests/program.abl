@@ -18,3 +18,8 @@ print 56 >= 78;
 print 56 <= 78;
 print 56 == 78;
 print 56 != 78;
+
+print "";
+
+print 56 >= 56;
+print 56 <= 56;
