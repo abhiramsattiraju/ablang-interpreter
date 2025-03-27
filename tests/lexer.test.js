@@ -13,7 +13,7 @@ describe('Lexer Tests', () => {
     });
 
     it('Should lex operators correctly', () => {
-        const tokens = lex('1 + 1 - 1 * 1 / 1 > 1 < 1');
+        const tokens = lex('1 + 1 - 1 * 1 / 1 > 1 < 1 <= 1 >= 1 == 1 != 1');
         expect(tokens).toEqual([
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '+'),
@@ -28,7 +28,20 @@ describe('Lexer Tests', () => {
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '<'),
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '<='),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '>='),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '=='),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '!='),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
         ]);
+    });
+
+    it('Should throw an error for invalid operators', () => {
+        expect(() => {lex('1 & 1');}).toThrow(Error);
+        expect(() => {lex('1 ** 1');}).toThrow(Error);
     });
 
     it('Should lex round brackets correctly', () => {

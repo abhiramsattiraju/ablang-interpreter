@@ -104,6 +104,11 @@ function lexOperator(sourceCodeWalker, tokenStream) {
         }
     }
 
+    if(!OPERATORS.includes(operatorValue)) {
+        exceptions.raiseException(exceptions.SYNTAX_ERROR,
+            `Invalid operator '${operatorValue}'`);
+    }
+
     tokenStream.push(
         new Token(
             tokenTypes.TOKEN_TYPE_OPERATOR,
