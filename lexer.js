@@ -137,24 +137,24 @@ function isCharacterOfOperator(character) {
 }
 
 function lexNameOrKeyword(sourceCodeWalker, tokenStream) {
-    let name_name = '';
+    let nameName = '';
     while (
         NAME_ALL_PERMITTED_CHARS.includes(
             sourceCodeWalker.currentElement
         ) && (!sourceCodeWalker.reached_end())
     ) {
-        name_name += sourceCodeWalker.currentElement;
+        nameName += sourceCodeWalker.currentElement;
         sourceCodeWalker.forward();
     }
 
-    if (KEYWORDS.includes(name_name)) {
+    if (KEYWORDS.includes(nameName)) {
         tokenStream.push(new Token(
-            tokenTypes.TOKEN_TYPE_KEYWORD, name_name
+            tokenTypes.TOKEN_TYPE_KEYWORD, nameName
         ));
         return;
     }
     tokenStream.push(new Token(
-        tokenTypes.TOKEN_TYPE_NAME, name_name
+        tokenTypes.TOKEN_TYPE_NAME, nameName
     ));
 }
 
