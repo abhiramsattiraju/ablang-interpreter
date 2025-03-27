@@ -140,4 +140,8 @@ describe('Lexer Tests', () => {
         const tokens = lex(' \t\n\r ');
         expect(tokens).toEqual([]);
     })
+
+    it('Should throw an error for invalid numbers', () => {
+        expect(() => {lex('123a');}).toThrow(Error);
+    });
 });

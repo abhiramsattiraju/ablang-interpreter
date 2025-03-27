@@ -64,6 +64,11 @@ function lexNumber(sourceCodeWalker, tokenStream) {
     tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_NUMBER, parseInt(num)
     ));
+
+    if(NAME_PERMITTED_FIRST_CHARS.includes(sourceCodeWalker.currentElement)) {
+        exceptions.raiseException(exceptions.SYNTAX_ERROR,
+            `Invalid number '${num}${sourceCodeWalker.currentElement}'`);
+    }
 }
 
 function lexSemicolon(sourceCodeWalker, tokenStream) {
