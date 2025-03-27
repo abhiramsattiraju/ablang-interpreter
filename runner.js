@@ -89,7 +89,15 @@ function evaluate(expressionValue) {
         }
     });
 
+    if(typeof result === 'boolean') {
+        return printBoolean(result);
+    }
+
     return result;
+}
+
+function printBoolean(boolean) {
+    return boolean ? 'True' : 'False';
 }
 
 
