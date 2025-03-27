@@ -56,11 +56,13 @@ function lexRoundBracket(sourceCodeWalker, tokenStream, bracket) {
 
 function lexNumber(sourceCodeWalker, tokenStream) {
     let num = '';
-    while (DIGITS.includes(sourceCodeWalker.currentElement) &&
+
+    while(DIGITS.includes(sourceCodeWalker.currentElement) &&
         (!sourceCodeWalker.reached_end())) {
         num += sourceCodeWalker.currentElement;
         sourceCodeWalker.forward();
     }
+
     tokenStream.push(new Token(
         tokenTypes.TOKEN_TYPE_NUMBER, parseInt(num)
     ));
