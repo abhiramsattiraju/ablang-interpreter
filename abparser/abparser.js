@@ -289,9 +289,14 @@ nor Operation.'
  */
 function parseTrinomialsAndBeyond(expression) {
     parseOperation(expression, '/');
-
     parseOperation(expression, '*');
     parseAdditionAndSubtraction(expression);
+    parseOperation(expression, '>');
+    parseOperation(expression, '<');
+    parseOperation(expression, '>=');
+    parseOperation(expression, '<=');
+    parseOperation(expression, '==');
+    parseOperation(expression, '!=');
 
     return expression.value;
 }
@@ -397,6 +402,18 @@ function getOperatorType(operatorString) {
         return operator_types.MULTIPLICATION;
     } else if(operatorString === '/') {
         return operator_types.DIVISION;
+    } else if(operatorString === '>') {
+        return operator_types.GREATER_THAN;
+    } else if(operatorString === '<') {
+        return operator_types.LESS_THAN;
+    } else if(operatorString === '>=') {
+        return operator_types.GREATER_THAN_OR_EQUAL_TO;
+    } else if(operatorString === '<=') {
+        return operator_types.LESS_THAN_OR_EQUAL_TO;
+    } else if(operatorString === '==') {
+        return operator_types.EQUAL_TO;
+    } else if(operatorString === '!=') {
+        return operator_types.NOT_EQUAL_TO;
     } else {
         exceptions.raiseException(REPORT_THIS_BUG,
             'An operator was invalidly parsed.'
