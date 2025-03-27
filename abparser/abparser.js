@@ -7,7 +7,6 @@ const {
     NODE_TYPE_OPERATOR,
     NODE_TYPE_STRING,
     NODE_TYPE_EXPRESSION,
-    NODE_TYPE_LEAVE_AS_IS
 } = require('./ast_node_types.js');
 const {Node, Operation} = require('./node_classes.js');
 const exceptions = require('../exceptions.js');
