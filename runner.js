@@ -34,11 +34,11 @@ function evaluate(expressionValue) {
             case operator_types.LEAVE_AS_IS:
                 result = operation.leftOperand;
                 break;
-            
+
             case operator_types.ADDITION:
                 result = operation.leftOperand + operation.rightOperand;
                 break;
-            
+
             case operator_types.SUBTRACTION:
                 result = operation.leftOperand - operation.rightOperand;
                 break;
@@ -46,7 +46,7 @@ function evaluate(expressionValue) {
             case operator_types.MULTIPLICATION:
                 result = operation.leftOperand * operation.rightOperand;
                 break;
-            
+
             case operator_types.DIVISION:
                 if (operation.rightOperand === 0) {
                     exceptions.raiseException(
@@ -56,7 +56,7 @@ function evaluate(expressionValue) {
                 }
                 result = operation.leftOperand / operation.rightOperand;
                 break;
-            
+
             default:
                 exceptions.raiseException(
                     exceptions.REPORT_THIS_BUG,
