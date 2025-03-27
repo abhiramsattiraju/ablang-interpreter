@@ -11,3 +11,10 @@ print 123 >= 9;
 print 123456789;
 print (53 + 512);
 print "heloo";
+
+print 56 > 78;
+print 56 < 78;
+print 56 >= 78;
+print 56 <= 78;
+print 56 == 78;
+print 56 != 78;
