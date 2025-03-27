@@ -44,6 +44,19 @@ describe('Lexer Tests', () => {
         expect(() => {lex('1 ** 1');}).toThrow(Error);
     });
 
+    it('Should throw an error for unterminated operators', () => {
+        expect(() => {lex('1 +');}).toThrow(Error);
+        expect(() => {lex('1 -');}).toThrow(Error);
+        expect(() => {lex('1 *');}).toThrow(Error);
+        expect(() => {lex('1 /');}).toThrow(Error);
+        expect(() => {lex('1 >');}).toThrow(Error);
+        expect(() => {lex('1 <');}).toThrow(Error);
+        expect(() => {lex('1 <=');}).toThrow(Error);
+        expect(() => {lex('1 >=');}).toThrow(Error);
+        expect(() => {lex('1 ==');}).toThrow(Error);
+        expect(() => {lex('1 !=');}).toThrow(Error);
+    });
+
     it('Should lex round brackets correctly', () => {
         const tokens = lex('( )');
         expect(tokens).toEqual([
