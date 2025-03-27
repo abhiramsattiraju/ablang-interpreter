@@ -407,13 +407,13 @@ function getOperatorType(operatorString) {
     } else if(operatorString === '<') {
         return operator_types.LESS_THAN;
     } else if(operatorString === '>=') {
-        return operator_types.GREATER_THAN_OR_EQUAL_TO;
+        return operator_types.GREATER_THAN_OR_EQUAL;
     } else if(operatorString === '<=') {
-        return operator_types.LESS_THAN_OR_EQUAL_TO;
+        return operator_types.LESS_THAN_OR_EQUAL;
     } else if(operatorString === '==') {
-        return operator_types.EQUAL_TO;
+        return operator_types.EQUAL;
     } else if(operatorString === '!=') {
-        return operator_types.NOT_EQUAL_TO;
+        return operator_types.NOT_EQUAL;
     } else {
         exceptions.raiseException(REPORT_THIS_BUG,
             'An operator was invalidly parsed.'
