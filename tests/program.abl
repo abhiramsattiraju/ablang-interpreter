@@ -23,3 +23,7 @@ print "";
 
 print 56 >= 56;
 print 56 <= 56;
+
+print ""
+print true;
+print false;

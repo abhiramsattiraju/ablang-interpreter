@@ -148,4 +148,13 @@ describe('Lexer Tests', () => {
     it('Should throw an error for unterminated strings', () => {
         expect(() => {lex('"hello');}).toThrow(Error);
     });
+
+    it('Should correctly lex true and false keywords', () => {
+        const tokens = lex('True False');
+
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, 'True'),
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, 'False'),
+        ]);
+    });
 });
