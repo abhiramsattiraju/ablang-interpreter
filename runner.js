@@ -57,6 +57,30 @@ function evaluate(expressionValue) {
                 result = operation.leftOperand / operation.rightOperand;
                 break;
 
+            case operator_types.GREATER_THAN:
+                result = operation.leftOperand > operation.rightOperand;
+                break;
+
+            case operator_types.LESS_THAN:
+                result = operation.leftOperand < operation.rightOperand;
+                break;
+
+            case operator_types.GREATER_THAN_OR_EQUAL:
+                result = operation.leftOperand >= operation.rightOperand;
+                break;
+
+            case operator_types.LESS_THAN_OR_EQUAL:
+                result = operation.leftOperand <= operation.rightOperand;
+                break;
+
+            case operator_types.EQUAL:
+                result = operation.leftOperand === operation.rightOperand;
+                break;
+
+            case operator_types.NOT_EQUAL:
+                result = operation.leftOperand !== operation.rightOperand;
+                break;
+
             default:
                 exceptions.raiseException(
                     exceptions.REPORT_THIS_BUG,
