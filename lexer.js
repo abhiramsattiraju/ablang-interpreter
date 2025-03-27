@@ -92,13 +92,36 @@ function lexString(sourceCodeWalker, tokenStream) {
 }
 
 function lexOperator(sourceCodeWalker, tokenStream) {
+    let operatorValue = '';
+
+    for(let i = 0; isCharacterOfOperator(sourceCodeWalker.currentElement); i++) {
+        operatorValue += sourceCodeWalker.currentElement;
+        sourceCodeWalker.forward();
+
+        if (sourceCodeWalker.reached_end()) {
+            exceptions.raiseException(exceptions.SYNTAX_ERROR,
+                `Unterminated operator '${operatorValue}'`);
+        }
+    }
+
     tokenStream.push(
         new Token(
             tokenTypes.TOKEN_TYPE_OPERATOR,
-            sourceCodeWalker.currentElement
+            operatorValue
         )
     );
-    sourceCodeWalker.forward();
+}
+
+function isCharacterOfOperator(character) {
+    let result = false;
+
+    OPERATORS.forEach((operator) => {
+        if (operator.includes(character)) {
+            result = true;
+        }
+    });
+
+    return result;
 }
 
 function lexNameOrKeyword(sourceCodeWalker, tokenStream) {

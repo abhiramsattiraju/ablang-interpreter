@@ -13,14 +13,21 @@ describe('Lexer Tests', () => {
     });
 
     it('Should lex operators correctly', () => {
-        const tokens = lex('+ - * / > <');
+        const tokens = lex('1 + 1 - 1 * 1 / 1 > 1 < 1');
         expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '+'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '-'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '*'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '/'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '>'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
             new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '<'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
         ]);
     });
 
