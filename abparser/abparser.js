@@ -22,6 +22,11 @@ function parse(token_stream) {
     // Loop through the token stream
     while(!tokenStreamWalker.reached_end()) {    
         let output = parseNode(tokenStreamWalker);
+
+        if(output === null) {
+            continue;
+        }
+
         tokenStreamWalker = output.tokenStreamWalker;
         ast.push(output.node);
     }
@@ -38,6 +43,8 @@ function parse(token_stream) {
 // The isBracketlessExpression parameter is used to indicate that the node
 // is not part of a round bracket expression, but _may_ have one or more
 // operations.
+//
+// Returns null if the current token is a newline character.
 function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
     // The node that will be parsed
     let node = new Node(null, null);
@@ -78,14 +85,6 @@ function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
         tokenStreamWalker.forward();
     }
 
-    // Semicolon
-    else if(tokenStreamWalker.currentElement.type ===
-            tokenTypes.TOKEN_TYPE_SEMICOLON) {
-        console.log(`Token number ${tokenStreamWalker.index} is a semicolon.`);
-        exceptions.raiseException(SYNTAX_ERROR,
-            'There is a semicolon that is not part of a statement.');
-    }
-
     // String
     else if(tokenStreamWalker.currentElement.type ===
             tokenTypes.TOKEN_TYPE_STRING) {
@@ -117,6 +116,14 @@ function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
             'Names are not supported yet.');
     }
 
+    // Blank line
+    else if(tokenStreamWalker.currentElement.type ===
+            tokenTypes.TOKEN_TYPE_NEWLINE) {
+        tokenStreamWalker.forward();
+
+        return null;
+    }
+
     // Invalid token
     else {
         exceptions.raiseException(REPORT_THIS_BUG,
@@ -133,13 +140,17 @@ function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
 function parseKeyword(tokenStreamWalker) {
     let node = new Node();
 
+    if(tokenStreamWalker.index >= 13) {
+        console.log(tokenStreamWalker.currentElement);
+    }
+
     // print
     if(tokenStreamWalker.currentElement.value === 'print') {
         tokenStreamWalker.forward();  // Skipt the 'print' keyword.
 
         node.type = NODE_TYPE_PRINT_STATEMENT;
 
-        let hasRoundBrackets = tokenStreamWalker.currentElement.value ===
+        let hasRoundBrackets = tokenStreamWalker.currentElement.type ===
             tokenTypes.TOKEN_TYPE_ROUND_BRACKET;
 
         let stage1 = parseExpression1(tokenStreamWalker, hasRoundBrackets);
@@ -147,9 +158,9 @@ function parseKeyword(tokenStreamWalker) {
 
         node.value = parseExpression2(stage1.node, hasRoundBrackets);
 
-
-        // Skip the semicolon
-        tokenStreamWalker.forward();
+        if(!tokenStreamWalker.reached_end) {
+            tokenStreamWalker.forward();  // Skip the newline.
+        }
     } else if(tokenStreamWalker.currentElement.value === 'True') {
         tokenStreamWalker.forward();
 
@@ -191,7 +202,7 @@ function parseExpression1(tokenStreamWalker, isRoundBrackets=true) {
     // Found a closing bracket without an opening bracket
     if(tokenStreamWalker.currentElement.value === ')') {
         exceptions.raiseException(SYNTAX_ERROR,
-            "Bracket error.");
+            `Bracket error at token ${tokenStreamWalker.index}.`);
     }
 
     node.type = NODE_TYPE_EXPRESSION;
@@ -390,6 +401,10 @@ function handleBracketSyntaxErrors(roundBrackets) {
 }
 
 function expressionReachedEnd(tokenStreamWalker, isRoundBrackets) {
+    if(tokenStreamWalker.reached_end()) {
+        return true;
+    }
+
     if(isRoundBrackets &&
        tokenStreamWalker.currentElement.type ===
        tokenTypes.TOKEN_TYPE_ROUND_BRACKET &&
@@ -397,7 +412,7 @@ function expressionReachedEnd(tokenStreamWalker, isRoundBrackets) {
         return true;
     } else if(!isRoundBrackets &&
               tokenStreamWalker.currentElement.type ===
-              tokenTypes.TOKEN_TYPE_SEMICOLON) {
+              tokenTypes.TOKEN_TYPE_NEWLINE) {
         return true;
     }
 

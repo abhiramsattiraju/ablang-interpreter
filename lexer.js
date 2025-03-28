@@ -27,7 +27,8 @@ function lex(source_code) {
         } else if (DIGITS.includes(sourceCodeWalker.currentElement)) {
             lexNumber(sourceCodeWalker, tokenStream);
         } else if (sourceCodeWalker.currentElement === ';') {
-            lexSemicolon(sourceCodeWalker, tokenStream);
+            exceptions.raiseException(exceptions.SYNTAX_ERROR,
+                'Semicolons are not allowed.');
         } else if (sourceCodeWalker.currentElement === '"') {
             lexString(sourceCodeWalker, tokenStream);
         } else if (isStartOfOperator(sourceCodeWalker.currentElement)) {
@@ -36,6 +37,11 @@ function lex(source_code) {
             sourceCodeWalker.currentElement
         )) {
             lexNameOrKeyword(sourceCodeWalker, tokenStream);
+        } else if (sourceCodeWalker.currentElement === '\n') {
+            tokenStream.push(new Token(
+                tokenTypes.TOKEN_TYPE_NEWLINE, '\n'
+            ));
+            sourceCodeWalker.forward();
         } else if (WHITESPACES.includes(sourceCodeWalker.currentElement)) {
             sourceCodeWalker.forward();
         } else {
@@ -71,13 +77,6 @@ function lexNumber(sourceCodeWalker, tokenStream) {
         exceptions.raiseException(exceptions.SYNTAX_ERROR,
             `Invalid number '${num}${sourceCodeWalker.currentElement}'`);
     }
-}
-
-function lexSemicolon(sourceCodeWalker, tokenStream) {
-    tokenStream.push(new Token(
-        tokenTypes.TOKEN_TYPE_SEMICOLON, ';'
-    ));
-    sourceCodeWalker.forward();
 }
 
 function lexString(sourceCodeWalker, tokenStream) {

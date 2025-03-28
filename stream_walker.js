@@ -1,6 +1,9 @@
 const exceptions = require('./exceptions.js');
 
-/** A class used to loop through things like strings or lists */
+/** A class used to loop through things like strings or lists
+ *  If currentElement is null, it means that the end of the stream has
+ * been reached.
+*/
 class StreamWalker {
     constructor(stream) {
         this.stream = stream;
@@ -14,12 +17,22 @@ class StreamWalker {
      * current element if doing so would result in an index error.
      */
     forward() {
+        if(this.currentElement === null) {
+            exceptions.raiseException(
+                exceptions.REPORT_THIS_BUG,
+                `A stream walker cannot move forward when it has reached its \
+end.`
+            );
+        }
+
         let steps = 1;
         if(arguments.length >= 1) steps = arguments[0];
 
         this.index += steps;
         if(this.index < this.length) {
             this.currentElement = this.stream[this.index];
+        } else {
+            this.currentElement = null;
         }
     }
 

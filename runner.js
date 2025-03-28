@@ -9,7 +9,8 @@ function run(ast) {
             console.log(evaluate(node.value.value));
         } else {
             exceptions.raiseException(exceptions.UNSUPPORTED_ERROR,
-                "Only print statements are supported"
+                `Only print statements are supported. \
+Current node: ${JSON.stringify(node)}`
             );
         }
     })
