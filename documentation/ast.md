@@ -1,5 +1,7 @@
 # Abstract Syntax Tree Documentation
 
+**NOTE:** This documentation is outdated.
+
 ## Overview
 The Abstract Syntax Tree (AST) is the intermediate representation used by the ABLang interpreter to represent parsed programs. Each node in the tree represents a program construct.
 
