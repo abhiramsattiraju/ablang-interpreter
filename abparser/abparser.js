@@ -42,9 +42,8 @@ function parse(token_stream) {
 // Returns an object with the node property as the parsed node and
 // tokenStreamWalker property as the new token stream walker moved forward.
 //
-// The isBracketlessExpression parameter is used to indicate that the node
-// is not part of a round bracket expression, but _may_ have one or more
-// operations.
+// If an expression is to be parsed by this function, the expression needs to
+// be wrapped by round brackets.
 //
 // Returns null if the current token is a newline character.
 function parseNode(tokenStreamWalker) {
@@ -191,7 +190,7 @@ function parseKeyword(tokenStreamWalker) {
     };
 }
 
-// Functions for parsing expression.
+// Functions for parsing an expression wrapped in round brackets.
 
 // Does the first stage of parsing expression, turning a list of tokens
 // into a list of nodes for operators and values.
