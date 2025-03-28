@@ -222,4 +222,9 @@ describe('Lexer Tests', () => {
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 4),
         ]);
     });
+
+    it('Should handle empty files', () => {
+        const tokens = lex('');
+        expect(tokens).toEqual([]);
+    });
 });
