@@ -39,7 +39,7 @@ function lex(source_code) {
             lexNameOrKeyword(sourceCodeWalker, tokenStream);
         } else if (sourceCodeWalker.currentElement === ':') {
             lexColon(sourceCodeWalker, tokenStream);
-        }else if (sourceCodeWalker.currentElement === '\n') {
+        } else if (sourceCodeWalker.currentElement === '\n') {
             tokenStream.push(new Token(
                 tokenTypes.TOKEN_TYPE_NEWLINE, '\n'
             ));
