@@ -2,7 +2,7 @@ const lex = require('../lexer.js');
 const tokenTypes = require('../token_types.js');
 const Token = require('../token_class.js');
 
-describe('Lexer Tests', () => {
+describe('Main lexer Tests', () => {
     it('Should lex numbers correctly', () => {
         const tokens = lex('123 45 6');
         expect(tokens).toEqual([
@@ -101,7 +101,9 @@ describe('Lexer Tests', () => {
     it('Should throw an error for invalid characters', () => {
         expect(() => {lex('@');}).toThrow(Error);
     });
+});
 
+describe('Lexer whitespace tests', () => {
     it('Should handle various whitespace combinations', () => {
         const tokens = lex('  print \t (  123  + "hello" \r )   ');
         expect(tokens).toEqual([
