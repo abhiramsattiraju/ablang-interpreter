@@ -62,6 +62,31 @@ end.`
 
         return this.stream[this.index + 1];
     }
+
+    /**
+     * Inserts an element at the current index. Does not move the stream
+     * forward.
+     */
+    insertAtCurrentIndex(element) {
+        this.insertAtGivenIndex(this.index, element);
+    }
+
+    /**
+     * Inserts an element at a given index. Does not move the stream
+     * forward.
+     */
+    insertAtGivenIndex(index, element) {
+        if(index < 0 || index > this.length) {
+            exceptions.raiseException(
+                exceptions.REPORT_THIS_BUG,
+                `A stream walker cannot insert an element at index ${index} \
+                when it has length ${this.length}.`
+            );
+        }
+
+        this.stream.splice(index, 0, element);
+        this.length++;
+    }
 }
 
 

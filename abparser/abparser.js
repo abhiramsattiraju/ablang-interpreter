@@ -12,6 +12,8 @@ const {
 const {Node, Operation} = require('./node_classes.js');
 const exceptions = require('../exceptions.js');
 const operator_types = require('./operator_types.js');
+const Token = require('../token_class.js');
+const { cloneStreamWalker } = require('../clone_stream_walker.js');
 
 
 // Parse a token stream (a list of tokens) into an AST (a list of nodes).
@@ -45,7 +47,7 @@ function parse(token_stream) {
 // operations.
 //
 // Returns null if the current token is a newline character.
-function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
+function parseNode(tokenStreamWalker) {
     // The node that will be parsed
     let node = new Node(null, null);
 
@@ -69,12 +71,6 @@ function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
         tokenStreamWalker = node_stage1.tokenStreamWalker;
 
         node = parseExpression2(node_stage1.node);
-    } else if(isBracketlessExpression) {
-        let node_stage1 = parseExpression1(tokenStreamWalker, false);
-        node = node_stage1.node;
-        tokenStreamWalker = node_stage1.tokenStreamWalker;
-
-        node = parseExpression2(node, false);
     }
 
     // Number
@@ -140,23 +136,33 @@ function parseNode(tokenStreamWalker, isBracketlessExpression=false) {
 function parseKeyword(tokenStreamWalker) {
     let node = new Node();
 
-    if(tokenStreamWalker.index >= 13) {
-        console.log(tokenStreamWalker.currentElement);
-    }
-
     // print
     if(tokenStreamWalker.currentElement.value === 'print') {
         tokenStreamWalker.forward();  // Skipt the 'print' keyword.
 
         node.type = NODE_TYPE_PRINT_STATEMENT;
 
-        let hasRoundBrackets = tokenStreamWalker.currentElement.type ===
-            tokenTypes.TOKEN_TYPE_ROUND_BRACKET;
+        // Wrap the expression to print in round brackets, to handle
+        // bracketless expressions.
+        tokenStreamWalker.insertAtCurrentIndex(
+            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, '(')
+        );
 
-        let stage1 = parseExpression1(tokenStreamWalker, hasRoundBrackets);
+        let closingBracketIndex = tokenStreamWalker.index;
+        for(temporaryWalker = cloneStreamWalker(tokenStreamWalker);
+            temporaryWalker.currentElement.type !== tokenTypes.TOKEN_TYPE_NEWLINE;
+            temporaryWalker.forward()) {
+            closingBracketIndex++;
+        }
+
+        tokenStreamWalker.insertAtGivenIndex(closingBracketIndex,
+            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, ')')
+        )
+
+        let stage1 = parseExpression1(tokenStreamWalker);
         tokenStreamWalker = stage1.tokenStreamWalker;
 
-        node.value = parseExpression2(stage1.node, hasRoundBrackets);
+        node.value = parseExpression2(stage1.node);
 
         if(!tokenStreamWalker.reached_end) {
             tokenStreamWalker.forward();  // Skip the newline.
@@ -196,7 +202,7 @@ function parseKeyword(tokenStreamWalker) {
 // Takes a token stream walker at the start position of the expression.
 // Returns an object with node as the partially parsed expression node and
 // tokenStreamWalker as the token stream walker at the start of the next node.
-function parseExpression1(tokenStreamWalker, isRoundBrackets=true) {
+function parseExpression1(tokenStreamWalker) {
     let node = {};
 
     // Found a closing bracket without an opening bracket
@@ -208,24 +214,21 @@ function parseExpression1(tokenStreamWalker, isRoundBrackets=true) {
     node.type = NODE_TYPE_EXPRESSION;
     node.value = [];
 
-    if(isRoundBrackets) {
-        tokenStreamWalker.forward();  // Skip the opening bracket
-    }
+    tokenStreamWalker.forward();  // Skip the opening bracket
+
     // Get the bracket's value by parsing all the nodes till reaching a
     // closing bracket
 
     // While the closing bracket is not reached. (bracket nodes inside the
     // bracket node are handled within the loop itself.)
-    while(!expressionReachedEnd(tokenStreamWalker, isRoundBrackets)) {
+    while(!expressionReachedEnd(tokenStreamWalker)) {
         // Parse all the nodes inside
         let output = parseNode(tokenStreamWalker);
         let newNode = output.node;
         tokenStreamWalker = output.tokenStreamWalker;
         node.value.push(newNode);
     }
-    if(isRoundBrackets) {
-        tokenStreamWalker.forward();  // Skip the closing bracket
-    }
+    tokenStreamWalker.forward();  // Skip the closing bracket
 
     return {
         node: node,
@@ -244,16 +247,15 @@ function parseExpression1(tokenStreamWalker, isRoundBrackets=true) {
 // Takes a expression node that has been parsed in stage 1 of expression
 // parsing.
 // Returns a fully parsed expression node.
-function parseExpression2(expression, isRoundBrackets=true) {
+function parseExpression2(expression) {
     if(expression.value.length === 1) {
         return new Node(NODE_TYPE_EXPRESSION, [new Operation(
             expression.value[0].value, operator_types.LEAVE_AS_IS, null
         )]);
     }
 
-    if(isRoundBrackets) {
-        handleBracketSyntaxErrors(expression);
-    }
+    handleBracketSyntaxErrors(expression);
+
 
     let parsedNodes = [];
 
@@ -400,19 +402,14 @@ function handleBracketSyntaxErrors(roundBrackets) {
     }
 }
 
-function expressionReachedEnd(tokenStreamWalker, isRoundBrackets) {
+function expressionReachedEnd(tokenStreamWalker) {
     if(tokenStreamWalker.reached_end()) {
         return true;
     }
 
-    if(isRoundBrackets &&
-       tokenStreamWalker.currentElement.type ===
+    if(tokenStreamWalker.currentElement.type ===
        tokenTypes.TOKEN_TYPE_ROUND_BRACKET &&
        tokenStreamWalker.currentElement.value === ')') {
-        return true;
-    } else if(!isRoundBrackets &&
-              tokenStreamWalker.currentElement.type ===
-              tokenTypes.TOKEN_TYPE_NEWLINE) {
         return true;
     }
 
