@@ -86,6 +86,8 @@ end.`
 
         this.stream.splice(index, 0, element);
         this.length++;
+
+        this.currentElement = this.stream[this.index];
     }
 }
 
