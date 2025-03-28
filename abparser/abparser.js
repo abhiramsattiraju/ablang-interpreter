@@ -55,17 +55,6 @@ function parseNode(tokenStreamWalker) {
     // Round brackets
     if(tokenStreamWalker.currentElement.type ===
        tokenTypes.TOKEN_TYPE_ROUND_BRACKET) {
-        // Round bracket parsing stages:
-        //
-        // 1 - Convert a list of tokens into a list of nodes for operators and
-        // values.
-        // 2 - Convert the list from value, op, value to value + op, value.
-        // 3 - Parse the bracket nodes.
-        // 4 - Do the division operations.
-        // 5 - Do the multiplications.
-        // 6 - Do the additions.
-        // 7 - Do the subtractions.
-
         let node_stage1 = parseExpression1(tokenStreamWalker);
         tokenStreamWalker = node_stage1.tokenStreamWalker;
 
