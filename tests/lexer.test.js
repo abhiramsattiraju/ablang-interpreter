@@ -165,4 +165,48 @@ describe('Lexer Tests', () => {
             new Token(tokenTypes.TOKEN_TYPE_KEYWORD, 'False'),
         ]);
     });
+
+    it('Should handle single newline characters', () => {
+        const tokens = lex('\n');
+        expect(tokens).toEqual([new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n')]);
+    });
+
+    it('Should handle multiple newline characters', () => {
+        const tokens = lex('\n\n\n');
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+        ]);
+    });
+
+    it('Should handle newlines at the beginning and end of input', () => {
+        const tokens = lex('\n1 + 2\n');
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '+'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 2),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+        ]);
+    });
+
+    it('Should handle multiple adjacent newlines', () => {
+        const tokens = lex('1 + 2\n\n3 * 4');
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '+'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 2),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 3),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '*'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 4),
+        ]);
+    });
+
+    it('Should handle newlines in string literals', () => {
+        const tokens = lex('"hello\nworld"');
+        expect(tokens).toEqual([new Token(tokenTypes.TOKEN_TYPE_STRING, 'hello\nworld')]);
+    });
 });
