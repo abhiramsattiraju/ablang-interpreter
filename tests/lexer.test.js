@@ -209,4 +209,17 @@ describe('Lexer Tests', () => {
         const tokens = lex('"hello\nworld"');
         expect(tokens).toEqual([new Token(tokenTypes.TOKEN_TYPE_STRING, 'hello\nworld')]);
     });
+
+    it('Should handle programs without a blank line at the end', () => {
+        const tokens = lex('1 + 2\n3 * 4');
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 1),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '+'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 2),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 3),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '*'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 4),
+        ]);
+    });
 });
