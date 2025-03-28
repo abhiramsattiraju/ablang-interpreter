@@ -229,4 +229,21 @@ describe('Lexer whitespace tests', () => {
         const tokens = lex('');
         expect(tokens).toEqual([]);
     });
+
+    it('Should lex if-statements', () => {
+        const tokens = lex('if x > 0:\n    print("Positive")');
+
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, 'if'),
+            new Token(tokenTypes.TOKEN_TYPE_NAME, 'x'),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, '>'),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 0),
+            new Token(tokenTypes.TOKEN_TYPE_COLON, ':'),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, '\n'),
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, 'print'),
+            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, '('),
+            new Token(tokenTypes.TOKEN_TYPE_STRING, 'Positive'),
+            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, ')')
+        ]);
+    });
 });

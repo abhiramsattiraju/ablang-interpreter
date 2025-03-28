@@ -9,7 +9,7 @@ const NAME_PERMITTED_FIRST_CHARS =
 const NAME_ALL_PERMITTED_CHARS =
     '_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const WHITESPACES = ' \t\n\r';
-const KEYWORDS = ['print', 'True', 'False'];
+const KEYWORDS = ['print', 'True', 'False', 'if'];
 const Token = require('./token_class.js');
 
 // Takes ABLang source code in a string and returns a token stream or a list of
@@ -37,7 +37,9 @@ function lex(source_code) {
             sourceCodeWalker.currentElement
         )) {
             lexNameOrKeyword(sourceCodeWalker, tokenStream);
-        } else if (sourceCodeWalker.currentElement === '\n') {
+        } else if (sourceCodeWalker.currentElement === ':') {
+            lexColon(sourceCodeWalker, tokenStream);
+        }else if (sourceCodeWalker.currentElement === '\n') {
             tokenStream.push(new Token(
                 tokenTypes.TOKEN_TYPE_NEWLINE, '\n'
             ));
@@ -133,6 +135,13 @@ function isCharacterOfOperator(character) {
     });
 
     return result;
+}
+
+function lexColon(sourceCodeWalker, tokenStream) {
+    tokenStream.push(new Token(
+        tokenTypes.TOKEN_TYPE_COLON, ':'
+    ));
+    sourceCodeWalker.forward();
 }
 
 function lexNameOrKeyword(sourceCodeWalker, tokenStream) {
