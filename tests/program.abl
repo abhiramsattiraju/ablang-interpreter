@@ -27,3 +27,11 @@ print 56 <= 56
 print ""
 print True
 print (False)
+
+print "
+
+Hello
+
+Friends
+
+"

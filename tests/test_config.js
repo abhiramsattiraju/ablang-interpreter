@@ -25,5 +25,6 @@ True\n\
 True\n\
 \n\
 True\n\
-False\n"
+False\n\
+\n\nHello\n\nFriends\n\n\n"
 };
