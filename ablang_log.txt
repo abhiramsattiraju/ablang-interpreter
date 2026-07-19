@@ -1,0 +1,212 @@
+Token: {"type":5,"value":"if"}
+Token: {"type":2,"value":10}
+Token: {"type":4,"value":">"}
+Token: {"type":2,"value":0}
+Token: {"type":8,"value":":"}
+Token: {"type":7,"value":"\n"}
+Token: {"type":9,"value":null}
+Token: {"type":5,"value":"print"}
+Token: {"type":1,"value":"("}
+Token: {"type":3,"value":"Positive"}
+Token: {"type":1,"value":")"}
+Token: {"type":7,"value":"\n"}
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Token: {"type":5,"value":"if"}
+Token: {"type":2,"value":10}
+Token: {"type":4,"value":">"}
+Token: {"type":2,"value":0}
+Token: {"type":8,"value":":"}
+Token: {"type":7,"value":"\n"}
+Token: {"type":9,"value":null}
+Token: {"type":5,"value":"print"}
+Token: {"type":1,"value":"("}
+Token: {"type":3,"value":"Positive"}
+Token: {"type":1,"value":")"}
+Token: {"type":7,"value":"\n"}
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Token: {"type":5,"value":"if"}
+Token: {"type":2,"value":10}
+Token: {"type":4,"value":">"}
+Token: {"type":2,"value":0}
+Token: {"type":8,"value":":"}
+Token: {"type":7,"value":"\n"}
+Token: {"type":9,"value":null}
+Token: {"type":5,"value":"print"}
+Token: {"type":1,"value":"("}
+Token: {"type":3,"value":"Positive"}
+Token: {"type":1,"value":")"}
+Token: {"type":7,"value":"\n"}
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Token: {"type":5,"value":"if"}
+Token: {"type":2,"value":10}
+Token: {"type":4,"value":">"}
+Token: {"type":2,"value":0}
+Token: {"type":8,"value":":"}
+Token: {"type":7,"value":"\n"}
+Token: {"type":9,"value":null}
+Token: {"type":5,"value":"print"}
+Token: {"type":1,"value":"("}
+Token: {"type":3,"value":"Positive"}
+Token: {"type":1,"value":")"}
+Token: {"type":7,"value":"\n"}
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1
+Base indent level: 1

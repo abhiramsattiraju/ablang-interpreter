@@ -39,13 +39,8 @@ function lex(source_code) {
             lexNameOrKeyword(sourceCodeWalker, tokenStream);
         } else if (sourceCodeWalker.currentElement === ':') {
             lexColon(sourceCodeWalker, tokenStream);
-        } else if (sourceCodeWalker.currentElement === '\n') {
-            tokenStream.push(new Token(
-                tokenTypes.TOKEN_TYPE_NEWLINE, '\n'
-            ));
-            sourceCodeWalker.forward();
         } else if (WHITESPACES.includes(sourceCodeWalker.currentElement)) {
-            sourceCodeWalker.forward();
+            lexWhitespace(sourceCodeWalker, tokenStream);
         } else {
             exceptions.raiseException(exceptions.SYNTAX_ERROR,
                 `Invalid character "${sourceCodeWalker.currentElement}"`);
@@ -53,6 +48,17 @@ function lex(source_code) {
     }
 
     return tokenStream;
+}
+
+function lexWhitespace(sourceCodeWalker, tokenStream) {
+    while (WHITESPACES.includes(sourceCodeWalker.currentElement)) {
+        if (sourceCodeWalker.currentElement === '\n') {
+            tokenStream.push(new Token(
+                tokenTypes.TOKEN_TYPE_NEWLINE, '\n'
+            ));
+        }
+        sourceCodeWalker.forward();
+    }
 }
 
 function lexRoundBracket(sourceCodeWalker, tokenStream, bracket) {

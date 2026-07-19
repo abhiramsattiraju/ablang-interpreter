@@ -129,6 +129,7 @@ describe('Lexer whitespace tests', () => {
         ]);
     });
 
+    // TODO: Move this to main tests.
     it('Should handle edge case of empty string', () => {
         const tokens = lex('');
         expect(tokens).toEqual([]);
