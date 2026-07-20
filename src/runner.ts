@@ -1,37 +1,40 @@
-const { NODE_TYPE_PRINT_STATEMENT, NODE_TYPE_NUMBER, NODE_TYPE_STRING } = require("./abparser/ast_node_types");
-const exceptions = require("./exceptions");
-const operator_types = require("./abparser/operator_types");
+import { NODE_TYPE_PRINT_STATEMENT } from "./abparser/ast_node_types";
+import * as exceptions from "./exceptions";
+import * as operator_types from "./abparser/operator_types";
+import { Node } from "./abparser/node_classes";
 
 // Run an ABLang AST
-function run(ast) {
-    ast.forEach((node, index) => {
-        if(node.type === NODE_TYPE_PRINT_STATEMENT) {
+export default function run(ast: Node[]): void {
+    ast.forEach((node) => {
+        if (node.type === NODE_TYPE_PRINT_STATEMENT) {
             console.log(evaluate(node.value.value));
         } else {
-            exceptions.raiseException(exceptions.UNSUPPORTED_ERROR,
-                `Only print statements are supported. \
-Current node: ${JSON.stringify(node)}`
+            exceptions.raiseException(
+                exceptions.UNSUPPORTED_ERROR,
+                `Only print statements are supported. Current node: ${JSON.stringify(node)}`
             );
         }
-    })
+    });
 }
 
 /**
- * 
- * @param {Array} expressionValue The value of an expression node.
- * @returns 
+ * Evaluates an expression value list of operations.
+ *
+ * @param {any[]} expressionValue The value of an expression node.
+ * @returns {any}
  */
-function evaluate(expressionValue) {
-    let result;
+function evaluate(expressionValue: any[]): any {
+    let result: any;
 
     expressionValue.forEach((operation) => {
-        if(Array.isArray(operation.leftOperand)) {
+        if (Array.isArray(operation.leftOperand)) {
             operation.leftOperand = evaluate(operation.leftOperand);
-        } if(Array.isArray(operation.rightOperand)) {
+        }
+        if (Array.isArray(operation.rightOperand)) {
             operation.rightOperand = evaluate(operation.rightOperand);
         }
 
-        switch(operation.operator) {
+        switch (operation.operator) {
             case operator_types.LEAVE_AS_IS:
                 result = operation.leftOperand;
                 break;
@@ -43,7 +46,7 @@ function evaluate(expressionValue) {
             case operator_types.SUBTRACTION:
                 result = operation.leftOperand - operation.rightOperand;
                 break;
-            
+
             case operator_types.MULTIPLICATION:
                 result = operation.leftOperand * operation.rightOperand;
                 break;
@@ -90,16 +93,13 @@ function evaluate(expressionValue) {
         }
     });
 
-    if(typeof result === 'boolean') {
+    if (typeof result === "boolean") {
         return printBoolean(result);
     }
 
     return result;
 }
 
-function printBoolean(boolean) {
-    return boolean ? 'True' : 'False';
+function printBoolean(boolean: boolean): string {
+    return boolean ? "True" : "False";
 }
-
-
-module.exports = run;

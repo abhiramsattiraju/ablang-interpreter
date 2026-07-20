@@ -26,6 +26,4 @@
   - Nested indents
   - Multiple lines in the then-block
 
-## Migration
-
-- Migrate to typescript
+- `simple_program.abl` should not have semicolons.

@@ -1,1 +1,1 @@
-node ablang.js tests/program.abl
+node dist/ablang.js tests/program.abl
