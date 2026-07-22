@@ -1,0 +1,11 @@
+export const ADDITION = 6;
+export const SUBTRACTION = 7;
+export const MULTIPLICATION = 8;
+export const DIVISION = 9;
+export const LEAVE_AS_IS = 10;
+export const GREATER_THAN = 11;
+export const LESS_THAN = 12;
+export const GREATER_THAN_OR_EQUAL = 13;
+export const LESS_THAN_OR_EQUAL = 14;
+export const EQUAL = 15;
+export const NOT_EQUAL = 16;
