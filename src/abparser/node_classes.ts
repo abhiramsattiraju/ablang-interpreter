@@ -10,10 +10,10 @@ export class Node {
 
 export class Operation {
     leftOperand: any;
-    operator: any;
+    operator: number;
     rightOperand: any;
 
-    constructor(leftOperand: any, operator: any, rightOperand: any) {
+    constructor(leftOperand: any, operator: number, rightOperand: any) {
         this.leftOperand = leftOperand;
         this.operator = operator;
         this.rightOperand = rightOperand;
