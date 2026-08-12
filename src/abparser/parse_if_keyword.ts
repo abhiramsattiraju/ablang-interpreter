@@ -47,21 +47,50 @@ export function parseIfKeyword(
         tokenStreamWalker.forward(); // Skip the colon.
     }
 
+    const bodyNodes: Node[] = [];
+
+    // Single-line then-block (statement directly follows colon on the same line)
     if (
         tokenStreamWalker.currentElement !== null &&
-        tokenStreamWalker.currentElement.type === tokenTypes.TOKEN_TYPE_NEWLINE
+        tokenStreamWalker.currentElement.type !== tokenTypes.TOKEN_TYPE_NEWLINE
     ) {
-        tokenStreamWalker.forward(); // Skip the newline.
-    }
-
-    const bodyNodes: Node[] = [];
-    while (!tokenStreamWalker.reached_end()) {
-        const output = parseNode(tokenStreamWalker);
-        if (output === null) {
-            continue;
+        while (
+            !tokenStreamWalker.reached_end() &&
+            tokenStreamWalker.currentElement !== null &&
+            tokenStreamWalker.currentElement.type !== tokenTypes.TOKEN_TYPE_NEWLINE
+        ) {
+            const output = parseNode(tokenStreamWalker);
+            if (output === null) {
+                break;
+            }
+            tokenStreamWalker = output.tokenStreamWalker;
+            bodyNodes.push(output.node);
         }
-        tokenStreamWalker = output.tokenStreamWalker;
-        bodyNodes.push(output.node);
+
+        if (
+            !tokenStreamWalker.reached_end() &&
+            tokenStreamWalker.currentElement !== null &&
+            tokenStreamWalker.currentElement.type === tokenTypes.TOKEN_TYPE_NEWLINE
+        ) {
+            tokenStreamWalker.forward(); // Skip the newline.
+        }
+    } else {
+        // Multi-line then-block (statement(s) follow on subsequent lines)
+        if (
+            tokenStreamWalker.currentElement !== null &&
+            tokenStreamWalker.currentElement.type === tokenTypes.TOKEN_TYPE_NEWLINE
+        ) {
+            tokenStreamWalker.forward(); // Skip the newline after colon.
+        }
+
+        while (!tokenStreamWalker.reached_end()) {
+            const output = parseNode(tokenStreamWalker);
+            if (output === null) {
+                continue;
+            }
+            tokenStreamWalker = output.tokenStreamWalker;
+            bodyNodes.push(output.node);
+        }
     }
 
     node.value = new IfStatement(conditionNode, bodyNodes);

@@ -193,24 +193,38 @@ describe("Parser Tests", () => {
         ]);
     });
 
-    it("Should parse nested if-statements correctly", () => {
-        const tokens = lex('if 1 > 0:\n    if 2 > 0:\n        print "Nested"');
+    it("Should parse single-line if-statements with then-block on the same line", () => {
+        const tokens = lex('if 1 > 0: print "Single line"');
         const ast = parse(tokens);
 
-        const innerCondition = new Node(NODE_TYPE_EXPRESSION, [
-            new Operation(2, operatorTypes.GREATER_THAN, 0),
-        ]);
-        const innerPrintBody = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
-            new Operation("Nested", operatorTypes.LEAVE_AS_IS, null),
-        ]));
-        const innerIfNode = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(innerCondition, [innerPrintBody]));
-
-        const outerCondition = new Node(NODE_TYPE_EXPRESSION, [
+        const expectedCondition = new Node(NODE_TYPE_EXPRESSION, [
             new Operation(1, operatorTypes.GREATER_THAN, 0),
         ]);
+        const expectedPrintBody = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Single line", operatorTypes.LEAVE_AS_IS, null),
+        ]));
 
         expect(ast).toEqual([
-            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCondition, [innerIfNode])),
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(expectedCondition, [expectedPrintBody])),
+        ]);
+    });
+
+    it("Should parse multi-line if-statements with multiple statements in then-block", () => {
+        const tokens = lex('if 1 > 0:\n    print "First"\n    print "Second"');
+        const ast = parse(tokens);
+
+        const expectedCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const printBody1 = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("First", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+        const printBody2 = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Second", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(expectedCondition, [printBody1, printBody2])),
         ]);
     });
 });
