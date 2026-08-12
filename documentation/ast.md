@@ -28,6 +28,7 @@ Node type constants are defined in [src/abparser/ast_node_types.ts](file:///home
 | `NODE_TYPE_OPERATOR` | `4` | Operator token node used internally during parsing. |
 | `NODE_TYPE_PRINT_STATEMENT` | `5` | Print statement whose `value` is an expression `Node`. |
 | `NODE_TYPE_BOOLEAN` | `6` | Boolean literal (`true` or `false`). |
+| `NODE_TYPE_IF_STATEMENT` | `7` | `if` statement whose `value` is an `IfStatement` object. |
 
 ### Node Type Details
 
@@ -88,6 +89,19 @@ Represents boolean literals (`True` or `False`).
 Node {
     type: 6, // NODE_TYPE_BOOLEAN
     value: true // boolean value (true | false)
+}
+```
+
+#### If Statement Node (`NODE_TYPE_IF_STATEMENT` = 7)
+Represents an `if` statement construct. Its `value` is an `IfStatement` instance containing a `condition` (`Node`) and `body` (`Node[]`).
+
+```typescript
+Node {
+    type: 7, // NODE_TYPE_IF_STATEMENT
+    value: IfStatement {
+        condition: Node { type: 1, value: [...] }, // condition Expression Node
+        body: [ ... ] // array of statement Nodes
+    }
 }
 ```
 

@@ -1,5 +1,6 @@
 import { parse } from "../src/abparser/abparser";
-import { Node, Operation } from "../src/abparser/node_classes";
+import { Node, Operation, IfStatement } from "../src/abparser/node_classes";
+import lex from "../src/lexer";
 import {
     TOKEN_TYPE_ROUND_BRACKET,
     TOKEN_TYPE_NUMBER,
@@ -12,6 +13,8 @@ import {
     NODE_TYPE_NUMBER as AST_NODE_TYPE_NUMBER,
     NODE_TYPE_STRING as AST_NODE_TYPE_STRING,
     NODE_TYPE_EXPRESSION,
+    NODE_TYPE_PRINT_STATEMENT,
+    NODE_TYPE_IF_STATEMENT,
 } from "../src/abparser/ast_node_types";
 
 // In the original JS test, TOKEN_TYPE_SEMICOLON was imported from token_types but was undefined.
@@ -173,4 +176,42 @@ describe("Parser Tests", () => {
             ]),
         ]);
     });
+
+    it("Should parse simple if-statements correctly", () => {
+        const tokens = lex('if 1 > 0:\n    print "Positive"');
+        const ast = parse(tokens);
+
+        const expectedCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const expectedPrintBody = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Positive", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(expectedCondition, [expectedPrintBody])),
+        ]);
+    });
+
+    it("Should parse nested if-statements correctly", () => {
+        const tokens = lex('if 1 > 0:\n    if 2 > 0:\n        print "Nested"');
+        const ast = parse(tokens);
+
+        const innerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(2, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const innerPrintBody = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Nested", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+        const innerIfNode = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(innerCondition, [innerPrintBody]));
+
+        const outerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCondition, [innerIfNode])),
+        ]);
+    });
 });
+

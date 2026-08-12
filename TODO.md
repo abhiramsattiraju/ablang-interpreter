@@ -30,4 +30,5 @@
 
 ## Organisation
 
-- Divide abparser.ts into more files.
+- [x] Divide abparser.ts into more files.
+

@@ -4,3 +4,5 @@ export const NODE_TYPE_STRING = 3;
 export const NODE_TYPE_OPERATOR = 4;
 export const NODE_TYPE_PRINT_STATEMENT = 5;
 export const NODE_TYPE_BOOLEAN = 6;
+export const NODE_TYPE_IF_STATEMENT = 7;
+

@@ -19,3 +19,14 @@ export class Operation {
         this.rightOperand = rightOperand;
     }
 }
+
+export class IfStatement {
+    condition: Node;
+    body: Node[];
+
+    constructor(condition: Node, body: Node[]) {
+        this.condition = condition;
+        this.body = body;
+    }
+}
+
