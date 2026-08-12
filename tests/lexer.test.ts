@@ -129,6 +129,44 @@ describe("Main lexer Tests", () => {
             lex("@");
         }).toThrow(Error);
     });
+
+    it("Should correctly lex true and false keywords", () => {
+        const tokens = lex("True False");
+
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "True"),
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "False"),
+        ]);
+    });
+
+    it("Should throw an error for invalid numbers", () => {
+        expect(() => {
+            lex("123a");
+        }).toThrow(Error);
+    });
+
+    it("Should throw an error for unterminated strings", () => {
+        expect(() => {
+            lex('"hello');
+        }).toThrow(Error);
+    });
+
+    it("Should lex if-statements", () => {
+        const tokens = lex('if x > 0:\n    print("Positive")');
+
+        expect(tokens).toEqual([
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "if"),
+            new Token(tokenTypes.TOKEN_TYPE_NAME, "x"),
+            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, ">"),
+            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 0),
+            new Token(tokenTypes.TOKEN_TYPE_COLON, ":"),
+            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
+            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "print"),
+            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, "("),
+            new Token(tokenTypes.TOKEN_TYPE_STRING, "Positive"),
+            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, ")"),
+        ]);
+    });
 });
 
 describe("Lexer whitespace tests", () => {
@@ -174,27 +212,6 @@ describe("Lexer whitespace tests", () => {
             new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
             new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
             new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
-        ]);
-    });
-
-    it("Should throw an error for invalid numbers", () => {
-        expect(() => {
-            lex("123a");
-        }).toThrow(Error);
-    });
-
-    it("Should throw an error for unterminated strings", () => {
-        expect(() => {
-            lex('"hello');
-        }).toThrow(Error);
-    });
-
-    it("Should correctly lex true and false keywords", () => {
-        const tokens = lex("True False");
-
-        expect(tokens).toEqual([
-            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "True"),
-            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "False"),
         ]);
     });
 
@@ -258,22 +275,5 @@ describe("Lexer whitespace tests", () => {
     it("Should handle empty files", () => {
         const tokens = lex("");
         expect(tokens).toEqual([]);
-    });
-
-    it("Should lex if-statements", () => {
-        const tokens = lex("if x > 0:\n    print(\"Positive\")");
-
-        expect(tokens).toEqual([
-            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "if"),
-            new Token(tokenTypes.TOKEN_TYPE_NAME, "x"),
-            new Token(tokenTypes.TOKEN_TYPE_OPERATOR, ">"),
-            new Token(tokenTypes.TOKEN_TYPE_NUMBER, 0),
-            new Token(tokenTypes.TOKEN_TYPE_COLON, ":"),
-            new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
-            new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "print"),
-            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, "("),
-            new Token(tokenTypes.TOKEN_TYPE_STRING, "Positive"),
-            new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, ")"),
-        ]);
     });
 });
