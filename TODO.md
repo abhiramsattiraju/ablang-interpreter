@@ -27,3 +27,7 @@
   - Multiple lines in the then-block
 
 - `simple_program.abl` should not have semicolons.
+
+## Organisation
+
+- Divide abparser.ts into more files.
