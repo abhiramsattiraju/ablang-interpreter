@@ -1,10 +1,11 @@
 import * as testConfig from "./test_config";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { Node, Operation } from "../src/abparser/node_classes";
+import { Node, Operation, IfStatement } from "../src/abparser/node_classes";
 import {
     NODE_TYPE_EXPRESSION,
     NODE_TYPE_PRINT_STATEMENT,
+    NODE_TYPE_IF_STATEMENT,
 } from "../src/abparser/ast_node_types";
 import * as operatorTypes from "../src/abparser/operator_types";
 import run from "../src/runner";
@@ -39,7 +40,7 @@ describe("Runner", () => {
         expect(() => run(ast)).toThrow(Error);
     });
 
-    it("should throw an error for unknown operator types", () => {
+    it("Should throw an error for unknown operator types", () => {
         const ast = [
             new Node(
                 NODE_TYPE_PRINT_STATEMENT,
@@ -50,4 +51,32 @@ describe("Runner", () => {
         ];
         expect(() => run(ast)).toThrow(Error);
     });
+
+    it("Should correctly execute if-statements", () => {
+        const consoleSpy = jest.spyOn(console, "log").mockImplementation();
+
+        const conditionTrue = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0)
+        ]);
+        const bodyPrint = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Executed", operatorTypes.LEAVE_AS_IS, null)
+        ]));
+        const ifStmtTrue = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(conditionTrue, [bodyPrint]));
+
+        const conditionFalse = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(0, operatorTypes.GREATER_THAN, 1)
+        ]);
+        const bodyPrintFalse = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Should not execute", operatorTypes.LEAVE_AS_IS, null)
+        ]));
+        const ifStmtFalse = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(conditionFalse, [bodyPrintFalse]));
+
+        run([ifStmtTrue, ifStmtFalse]);
+
+        expect(consoleSpy).toHaveBeenCalledWith("Executed");
+        expect(consoleSpy).not.toHaveBeenCalledWith("Should not execute");
+
+        consoleSpy.mockRestore();
+    });
 });
+

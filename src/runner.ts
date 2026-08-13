@@ -1,17 +1,27 @@
-import { NODE_TYPE_PRINT_STATEMENT } from "./abparser/ast_node_types";
+import { NODE_TYPE_PRINT_STATEMENT, NODE_TYPE_IF_STATEMENT } from "./abparser/ast_node_types";
 import * as exceptions from "./exceptions";
 import * as operator_types from "./abparser/operator_types";
-import { Node } from "./abparser/node_classes";
+import { Node, IfStatement } from "./abparser/node_classes";
 
 // Run an ABLang AST
 export default function run(ast: Node[]): void {
     ast.forEach((node) => {
         if (node.type === NODE_TYPE_PRINT_STATEMENT) {
-            console.log(evaluate(node.value.value));
+            let result = evaluate(node.value.value);
+            if (typeof result === "boolean") {
+                result = printBoolean(result);
+            }
+            console.log(result);
+        } else if (node.type === NODE_TYPE_IF_STATEMENT) {
+            const ifStmt = node.value as IfStatement;
+            const conditionResult = evaluate(ifStmt.condition.value);
+            if (conditionResult) {
+                run(ifStmt.body);
+            }
         } else {
             exceptions.raiseException(
                 exceptions.UNSUPPORTED_ERROR,
-                `Only print statements are supported. Current node: ${JSON.stringify(node)}`
+                `Only print and if statements are supported. Current node: ${JSON.stringify(node)}`
             );
         }
     });
@@ -92,10 +102,6 @@ function evaluate(expressionValue: any[]): any {
                 );
         }
     });
-
-    if (typeof result === "boolean") {
-        return printBoolean(result);
-    }
 
     return result;
 }
