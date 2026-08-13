@@ -19,12 +19,13 @@
 
 ## Tests
 
+- `simple_program.abl` should not have semicolons.
+- More tests for if-statements with their own abl files.
+
 - Add lots of tests (mainly whitespace-related)
   - Mixed `print` statements and stand-alone expressions in the then-block
   - Nested indents
   - Multiple lines in the then-block
-
-- `simple_program.abl` should not have semicolons.
 
 ## Organisation
 
