@@ -30,4 +30,3 @@
 ## Organisation
 
 - Fix the naming convention mess for node types and token types.
-
