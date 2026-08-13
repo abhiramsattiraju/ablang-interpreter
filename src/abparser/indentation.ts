@@ -15,7 +15,7 @@ export function parseIndentedBlock(
 ): { nodes: Node[]; tokenStreamWalker: StreamWalker<Token> } {
     if (tokenStreamWalker.currentElement?.type !== tokenTypes.TOKEN_TYPE_INDENT) {
         exceptions.raiseException(
-            exceptions.SYNTAX_ERROR,
+            exceptions.REPORT_THIS_BUG,
             "Expected an indented block."
         );
     }

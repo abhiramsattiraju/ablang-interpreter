@@ -36,7 +36,7 @@ export class StreamWalker<T> {
     get_previous_element(): T {
         if (this.index < 1) {
             exceptions.raiseException(
-                exceptions.SYNTAX_ERROR,
+                exceptions.REPORT_THIS_BUG,
                 `There should be something before ${this.currentElement}`
             );
         }

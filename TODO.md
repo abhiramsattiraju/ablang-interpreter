@@ -7,7 +7,6 @@
 - Fail gracefully at unexpected indent
 - Internal error if there is an unexpected indent in the then-block
 - Support single quote strings
-- Check if there are syntax errors thrown when it should be REPORT_THIS_BUG
 
 ## Naming
 
