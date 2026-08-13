@@ -19,8 +19,7 @@ describe("Runner", () => {
         );
         // Normalize line endings to avoid CRLF/LF platform differences
         const normalizedStdout = stdout.replace(/\r\n/g, "\n");
-        const normalizedExpected = testConfig.PROGRAM_ABL_EXPECTED_OUTPUT.replace(/\r\n/g, "\n");
-        expect(normalizedStdout).toEqual(normalizedExpected);
+        expect(normalizedStdout).toEqual(testConfig.PROGRAM_ABL_EXPECTED_OUTPUT);
     });
 
     it("Should throw an error for division by zero", () => {
@@ -50,33 +49,6 @@ describe("Runner", () => {
             ),
         ];
         expect(() => run(ast)).toThrow(Error);
-    });
-
-    it("Should correctly execute if-statements", () => {
-        const consoleSpy = jest.spyOn(console, "log").mockImplementation();
-
-        const conditionTrue = new Node(NODE_TYPE_EXPRESSION, [
-            new Operation(1, operatorTypes.GREATER_THAN, 0)
-        ]);
-        const bodyPrint = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
-            new Operation("Executed", operatorTypes.LEAVE_AS_IS, null)
-        ]));
-        const ifStmtTrue = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(conditionTrue, [bodyPrint]));
-
-        const conditionFalse = new Node(NODE_TYPE_EXPRESSION, [
-            new Operation(0, operatorTypes.GREATER_THAN, 1)
-        ]);
-        const bodyPrintFalse = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
-            new Operation("Should not execute", operatorTypes.LEAVE_AS_IS, null)
-        ]));
-        const ifStmtFalse = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(conditionFalse, [bodyPrintFalse]));
-
-        run([ifStmtTrue, ifStmtFalse]);
-
-        expect(consoleSpy).toHaveBeenCalledWith("Executed");
-        expect(consoleSpy).not.toHaveBeenCalledWith("Should not execute");
-
-        consoleSpy.mockRestore();
     });
 });
 

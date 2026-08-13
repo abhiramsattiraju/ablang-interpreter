@@ -28,4 +28,5 @@ export const PROGRAM_ABL_EXPECTED_OUTPUT =
     "\n" +
     "True\n" +
     "False\n" +
-    "\n\nHello\n\nFriends\n\n\n";
+    "\n\nHello\n\nFriends\n\n\n" +
+    "This should execute.\n";
