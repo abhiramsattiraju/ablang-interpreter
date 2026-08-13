@@ -178,7 +178,10 @@ describe("Parser Tests", () => {
     });
 
     it("Should parse simple if-statements correctly", () => {
-        const tokens = lex('if 1 > 0:\n    print "Positive"');
+        const tokens = lex([
+            'if 1 > 0:',
+            '    print "Positive"',
+        ].join('\n'));
         const ast = parse(tokens);
 
         const expectedCondition = new Node(NODE_TYPE_EXPRESSION, [
@@ -210,7 +213,11 @@ describe("Parser Tests", () => {
     });
 
     it("Should parse multi-line if-statements with multiple statements in then-block", () => {
-        const tokens = lex('if 1 > 0:\n    print "First"\n    print "Second"');
+        const tokens = lex([
+            'if 1 > 0:',
+            '    print "First"',
+            '    print "Second"',
+        ].join('\n'));
         const ast = parse(tokens);
 
         const expectedCondition = new Node(NODE_TYPE_EXPRESSION, [
@@ -227,5 +234,223 @@ describe("Parser Tests", () => {
             new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(expectedCondition, [printBody1, printBody2])),
         ]);
     });
+
+    it("Should throw a syntax error when colon is missing in if statement", () => {
+        const tokens = lex([
+            'if 1 > 0',
+            '    print "Missing colon"',
+        ].join('\n'));
+        expect(() => parse(tokens)).toThrow(Error);
+    });
+
+    it("Should throw a syntax error for empty condition in if statement", () => {
+        const tokens = lex('if: print "No condition"');
+        expect(() => parse(tokens)).toThrow(Error);
+    });
+
+    it("Should throw a syntax error for empty if statement / no then-block", () => {
+        const tokens = lex("if 1 > 0:");
+        expect(() => parse(tokens)).toThrow(Error);
+    });
+
+    it("Should throw a syntax error for if statement followed by newline with no then-block", () => {
+        const tokens = lex("if 1 > 0:\n");
+        expect(() => parse(tokens)).toThrow(Error);
+    });
+
+    it("Should throw a syntax error for if keyword at EOF", () => {
+        const tokens = lex("if");
+        expect(() => parse(tokens)).toThrow(Error);
+    });
+
+    it("Should throw a syntax error when there is a token that is not an \
+expression after the if token.", () => {
+        let tokens = lex('if print "hello":\n    print "world"');
+        expect(() => parse(tokens)).toThrow(Error);
+
+        tokens = lex('if if:\n    print "world"');
+        expect(() => parse(tokens)).toThrow(Error);
+    });
 });
 
+describe("Indented block tests", () => {
+    const indentStyles = [
+        { name: "4 spaces", indent: "    " },
+        { name: "2 spaces", indent: "  " },
+        { name: "8 spaces", indent: "        " },
+        { name: "1 space", indent: " " },
+        { name: "1 tab", indent: "\t" },
+        { name: "2 tabs", indent: "\t\t" },
+    ];
+
+    indentStyles.forEach(({ name, indent }) => {
+        it(`Should parse a basic indented if-block with ${name}`, () => {
+            const tokens = lex([
+                'if 1 > 0:',
+                `${indent}print "Yes"`,
+            ].join('\n'));
+            const ast = parse(tokens);
+
+            const expectedCondition = new Node(NODE_TYPE_EXPRESSION, [
+                new Operation(1, operatorTypes.GREATER_THAN, 0),
+            ]);
+            const expectedBody = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+                new Operation("Yes", operatorTypes.LEAVE_AS_IS, null),
+            ]));
+
+            expect(ast).toEqual([
+                new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(expectedCondition, [expectedBody])),
+            ]);
+        });
+    });
+
+    it("Should parse multiple independent indented if-blocks", () => {
+        const tokens = lex([
+            'if 1 > 0:',
+            '    print "A"',
+            'if 2 > 1:',
+            '    print "B"',
+        ].join('\n'));
+        const ast = parse(tokens);
+
+        const condition1 = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const body1 = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("A", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+
+        const condition2 = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(2, operatorTypes.GREATER_THAN, 1),
+        ]);
+        const body2 = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("B", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(condition1, [body1])),
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(condition2, [body2])),
+        ]);
+    });
+
+    it("Should parse nested if-statements (if inside if)", () => {
+        const tokens = lex([
+            'if 1 > 0:',
+            '    if 2 > 1:',
+            '        print "Nested"',
+        ].join('\n'));
+        const ast = parse(tokens);
+
+        const innerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(2, operatorTypes.GREATER_THAN, 1),
+        ]);
+        const innerBody = new Node(NODE_TYPE_PRINT_STATEMENT, new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("Nested", operatorTypes.LEAVE_AS_IS, null),
+        ]));
+        const innerIf = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(innerCondition, [innerBody]));
+
+        const outerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCondition, [innerIf])),
+        ]);
+    });
+
+    it("Should parse a nested if followed by a sibling statement in the outer block", () => {
+        const tokens = lex([
+            'if 1 > 0:',
+            '    if 2 > 0:',
+            '        print "hi"',
+            '    print "hi"',
+        ].join('\n'));
+        const ast = parse(tokens);
+
+        const hiExpr = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("hi", operatorTypes.LEAVE_AS_IS, null),
+        ]);
+
+        const innerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(2, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const innerIf = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(
+            innerCondition,
+            [new Node(NODE_TYPE_PRINT_STATEMENT, hiExpr)]
+        ));
+
+        const siblingPrint = new Node(NODE_TYPE_PRINT_STATEMENT, hiExpr);
+
+        const outerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCondition, [innerIf, siblingPrint])),
+        ]);
+    });
+
+    it("Should parse a nested if-only block (if 1 > 0 contains if 2 > 0)", () => {
+        const tokens = lex([
+            'if 1 > 0:',
+            '    if 2 > 0:',
+            '        print "hi"',
+        ].join('\n'));
+        const ast = parse(tokens);
+
+        const hiExpr = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("hi", operatorTypes.LEAVE_AS_IS, null),
+        ]);
+
+        const innerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(2, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const innerIf = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(
+            innerCondition,
+            [new Node(NODE_TYPE_PRINT_STATEMENT, hiExpr)]
+        ));
+
+        const outerCondition = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+
+        expect(ast).toEqual([
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCondition, [innerIf])),
+        ]);
+    });
+
+    it("Should parse a program with two top-level if-statements, the first having a nested if and a sibling print", () => {
+        const program = [
+            'if 1 > 0:',
+            '    if 2 > 0:',
+            '        print "hi"',
+            '    print "hi"',
+            '',
+            'if 1 > 0:',
+            '    if 2 > 0:',
+            '        print "hi"',
+        ].join('\n');
+        const ast = parse(lex(program));
+
+        const hiExpr = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation("hi", operatorTypes.LEAVE_AS_IS, null),
+        ]);
+        const printHi = new Node(NODE_TYPE_PRINT_STATEMENT, hiExpr);
+
+        const innerCond = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(2, operatorTypes.GREATER_THAN, 0),
+        ]);
+        const innerIf = new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(innerCond, [printHi]));
+
+        const outerCond = new Node(NODE_TYPE_EXPRESSION, [
+            new Operation(1, operatorTypes.GREATER_THAN, 0),
+        ]);
+
+        expect(ast).toEqual([
+            // First top-level if: body = [innerIf, sibling print]
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCond, [innerIf, printHi])),
+            // Second top-level if: body = [innerIf only]
+            new Node(NODE_TYPE_IF_STATEMENT, new IfStatement(outerCond, [innerIf])),
+        ]);
+    });
+});

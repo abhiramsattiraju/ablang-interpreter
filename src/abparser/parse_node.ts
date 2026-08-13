@@ -86,6 +86,15 @@ export function parseNode(
         return null;
     }
 
+    // INDENT / DEDENT — structural markers consumed by parseIndentedBlock; skip at statement level.
+    else if (
+        current.type === tokenTypes.TOKEN_TYPE_INDENT ||
+        current.type === tokenTypes.TOKEN_TYPE_DEDENT
+    ) {
+        tokenStreamWalker.forward();
+        return null;
+    }
+
     // Invalid token
     else {
         exceptions.raiseException(

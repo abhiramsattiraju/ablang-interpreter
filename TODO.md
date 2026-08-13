@@ -1,14 +1,13 @@
 # TODO
 
-## Parser / syntax
+## Parser / lexer / syntax
 
-- Syntax error: No then block
-- Syntax error for empty if statement
-- Handle blank lines at if statements
 - Handle trailing whitespace at EOL
 - Handle trailing whitespace on a blank line between lines of code
 - Fail gracefully at unexpected indent
 - Internal error if there is an unexpected indent in the then-block
+- Support single quote strings
+- Check if there are syntax errors thrown when it should be REPORT_THIS_BUG
 
 ## Naming
 
@@ -30,5 +29,5 @@
 
 ## Organisation
 
-- [x] Divide abparser.ts into more files.
+- Fix the naming convention mess for node types and token types.
 

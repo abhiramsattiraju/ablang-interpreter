@@ -161,10 +161,12 @@ describe("Main lexer Tests", () => {
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 0),
             new Token(tokenTypes.TOKEN_TYPE_COLON, ":"),
             new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
+            new Token(tokenTypes.TOKEN_TYPE_INDENT, "    "),
             new Token(tokenTypes.TOKEN_TYPE_KEYWORD, "print"),
             new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, "("),
             new Token(tokenTypes.TOKEN_TYPE_STRING, "Positive"),
             new Token(tokenTypes.TOKEN_TYPE_ROUND_BRACKET, ")"),
+            new Token(tokenTypes.TOKEN_TYPE_DEDENT, ""),
         ]);
     });
 });
@@ -185,8 +187,10 @@ describe("Lexer whitespace tests", () => {
         expect(tokens2).toEqual([
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 123),
             new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"),
+            new Token(tokenTypes.TOKEN_TYPE_INDENT, "  "),
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 45),
             new Token(tokenTypes.TOKEN_TYPE_NUMBER, 6),
+            new Token(tokenTypes.TOKEN_TYPE_DEDENT, ""),
         ]);
 
         const tokens3 = lex('   "testString" \t\r  ');
@@ -275,5 +279,17 @@ describe("Lexer whitespace tests", () => {
     it("Should handle empty files", () => {
         const tokens = lex("");
         expect(tokens).toEqual([]);
+    });
+    it("Should throw a syntax error for mixed spaces and tabs in indentation", () => {
+        expect(() => lex("if 1 > 0:\n \tprint 1")).toThrow(Error);
+        expect(() => lex("if 1 > 0:\n\t print 1")).toThrow(Error);
+    });
+
+    it("Should throw a syntax error for mismatched dedent (unindent)", () => {
+        expect(() => lex([
+            "if 1 > 0:",
+            "    print 1",
+            "  print 2"
+        ].join('\n'))).toThrow(Error);
     });
 });

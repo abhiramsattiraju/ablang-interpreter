@@ -23,8 +23,9 @@ export function parsePrintKeyword(
     let closingBracketIndex = tokenStreamWalker.index;
     const temporaryWalker = cloneStreamWalker(tokenStreamWalker);
     while (
-        temporaryWalker.currentElement !== null &&
-        temporaryWalker.currentElement.type !== tokenTypes.TOKEN_TYPE_NEWLINE
+        temporaryWalker.currentElement &&
+        temporaryWalker.currentElement.type !== tokenTypes.TOKEN_TYPE_NEWLINE &&
+        temporaryWalker.currentElement.type !== tokenTypes.TOKEN_TYPE_DEDENT
     ) {
         closingBracketIndex++;
         temporaryWalker.forward();
@@ -40,7 +41,7 @@ export function parsePrintKeyword(
 
     node.value = parseExpression2(stage1.node);
 
-    if (!tokenStreamWalker.reached_end()) {
+    if (tokenStreamWalker.currentElement?.type === tokenTypes.TOKEN_TYPE_NEWLINE) {
         tokenStreamWalker.forward(); // Skip the newline.
     }
 

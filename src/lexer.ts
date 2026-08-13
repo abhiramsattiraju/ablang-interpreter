@@ -18,6 +18,9 @@ export default function lex(source_code: string): Token[] {
     const sourceCodeWalker = new StreamWalker<string>(source_code);
     const tokenStream: Token[] = [];
 
+    // Stack of indentation strings. The bottom is always the empty string (level 0).
+    const indentStack: string[] = [""];
+
     // Loop through the source code.
     while (!sourceCodeWalker.reached_end()) {
         const current = sourceCodeWalker.currentElement;
@@ -44,8 +47,11 @@ export default function lex(source_code: string): Token[] {
             lexNameOrKeyword(sourceCodeWalker, tokenStream);
         } else if (current === ":") {
             lexColon(sourceCodeWalker, tokenStream);
-        } else if (WHITESPACES.includes(current)) {
-            lexWhitespace(sourceCodeWalker, tokenStream);
+        } else if (current === "\n") {
+            lexNewlineAndIndentation(sourceCodeWalker, tokenStream, indentStack);
+        } else if (current === " " || current === "\t" || current === "\r") {
+            // Inline whitespace (spaces, tabs, lone carriage returns) is ignored.
+            sourceCodeWalker.forward();
         } else {
             exceptions.raiseException(
                 exceptions.SYNTAX_ERROR,
@@ -54,19 +60,84 @@ export default function lex(source_code: string): Token[] {
         }
     }
 
+    // Emit any remaining DEDENT tokens to close open blocks.
+    while (indentStack.length > 1) {
+        tokenStream.push(new Token(tokenTypes.TOKEN_TYPE_DEDENT, ""));
+        indentStack.pop();
+    }
+
     return tokenStream;
 }
 
-function lexWhitespace(sourceCodeWalker: StreamWalker<string>, tokenStream: Token[]): void {
-    while (
-        sourceCodeWalker.currentElement !== null &&
-        WHITESPACES.includes(sourceCodeWalker.currentElement)
-    ) {
-        if (sourceCodeWalker.currentElement === "\n") {
-            tokenStream.push(new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"));
-        }
+function lexNewlineAndIndentation(
+    sourceCodeWalker: StreamWalker<string>,
+    tokenStream: Token[],
+    indentStack: string[]
+): void {
+    // Consume the newline character(s).
+    tokenStream.push(new Token(tokenTypes.TOKEN_TYPE_NEWLINE, "\n"));
+    sourceCodeWalker.forward();
+    // Consume an optional \r in \r\n sequences.
+    if (sourceCodeWalker.currentElement === "\r") {
         sourceCodeWalker.forward();
     }
+
+    // Measure the indentation of the next line.
+    let lineIndent = "";
+    while (
+        sourceCodeWalker.currentElement === " " ||
+        sourceCodeWalker.currentElement === "\t"
+    ) {
+        // Disallow mixing tabs and spaces.
+        if (lineIndent.length > 0 && lineIndent[0] !== sourceCodeWalker.currentElement) {
+            exceptions.raiseException(
+                exceptions.SYNTAX_ERROR,
+                "Inconsistent use of tabs and spaces in indentation."
+            );
+        }
+        lineIndent += sourceCodeWalker.currentElement;
+        sourceCodeWalker.forward();
+    }
+
+    // Skip blank lines (lines that are empty or contain only whitespace).
+    if (
+        sourceCodeWalker.currentElement === "\n" ||
+        sourceCodeWalker.currentElement === "\r" ||
+        sourceCodeWalker.currentElement === null ||
+        sourceCodeWalker.reached_end()
+    ) {
+        return;
+    }
+
+    const currentIndent = indentStack[indentStack.length - 1];
+
+    if (lineIndent.length > currentIndent.length) {
+        // Indentation increased: one level deeper.
+        if (!lineIndent.startsWith(currentIndent)) {
+            exceptions.raiseException(
+                exceptions.SYNTAX_ERROR,
+                "Indentation error."
+            );
+        }
+        indentStack.push(lineIndent);
+        tokenStream.push(new Token(tokenTypes.TOKEN_TYPE_INDENT, lineIndent));
+    } else if (lineIndent.length < currentIndent.length) {
+        // Indentation decreased: pop levels until we match.
+        while (
+            indentStack.length > 1 &&
+            indentStack[indentStack.length - 1].length > lineIndent.length
+        ) {
+            tokenStream.push(new Token(tokenTypes.TOKEN_TYPE_DEDENT, ""));
+            indentStack.pop();
+        }
+        if (indentStack[indentStack.length - 1] !== lineIndent) {
+            exceptions.raiseException(
+                exceptions.SYNTAX_ERROR,
+                "Indentation error: unindent does not match any outer indentation level."
+            );
+        }
+    }
+    // If lineIndent === currentIndent, indentation is unchanged — no token needed.
 }
 
 function lexRoundBracket(
