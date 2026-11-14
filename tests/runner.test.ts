@@ -1,11 +1,10 @@
 import * as testConfig from "./test_config";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { Node, Operation, IfStatement } from "../src/abparser/node_classes";
+import { Node, Operation } from "../src/abparser/node_classes";
 import {
     NODE_TYPE_EXPRESSION,
     NODE_TYPE_PRINT_STATEMENT,
-    NODE_TYPE_IF_STATEMENT,
 } from "../src/abparser/ast_node_types";
 import * as operatorTypes from "../src/abparser/operator_types";
 import run from "../src/runner";
