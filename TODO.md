@@ -1,6 +1,12 @@
 # TODO
 
-## Parser / lexer / syntax
+## `let` statement
+
+- Read runner_let.test.ts and check for anything fishy
+- Update `program.abl`
+- Update the documentation
+
+## Error handling
 
 - Handle trailing whitespace at EOL
 - Handle trailing whitespace on a blank line between lines of code
