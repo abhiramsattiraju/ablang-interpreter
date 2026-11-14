@@ -40,3 +40,12 @@ export class AssignmentStatement {
         this.expression = expression;
     }
 }
+
+// A use of a variable inside an expression; resolved at run time.
+export class VariableReference {
+    name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+}

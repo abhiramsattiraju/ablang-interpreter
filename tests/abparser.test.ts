@@ -1,5 +1,5 @@
 import { parse } from "../src/abparser/abparser";
-import { Node, Operation, IfStatement } from "../src/abparser/node_classes";
+import { Node, Operation, IfStatement, VariableReference } from "../src/abparser/node_classes";
 import lex from "../src/lexer";
 import {
     TOKEN_TYPE_ROUND_BRACKET,
@@ -15,6 +15,7 @@ import {
     NODE_TYPE_EXPRESSION,
     NODE_TYPE_PRINT_STATEMENT,
     NODE_TYPE_IF_STATEMENT,
+    NODE_TYPE_NAME,
 } from "../src/abparser/ast_node_types";
 
 // In the original JS test, TOKEN_TYPE_SEMICOLON was imported from token_types but was undefined.
@@ -101,9 +102,10 @@ describe("Parser Tests", () => {
         expect(() => parse(tokens)).toThrow(Error);
     });
 
-    it("Should throw error for an unsupported name", () => {
+    it("Should parse a name into a variable reference", () => {
         const tokens = [{ type: TOKEN_TYPE_NAME, value: "variable" }];
-        expect(() => parse(tokens)).toThrow(Error);
+        const ast = parse(tokens);
+        expect(ast).toEqual([new Node(NODE_TYPE_NAME, new VariableReference("variable"))]);
     });
 
     it("Should throw an error for invalid token", () => {

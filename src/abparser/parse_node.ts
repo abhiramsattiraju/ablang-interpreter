@@ -1,11 +1,12 @@
 import { StreamWalker } from "../stream_walker";
 import { Token } from "../token_class";
-import { Node } from "./node_classes";
+import { Node, VariableReference } from "./node_classes";
 import * as tokenTypes from "../token_types";
 import {
     NODE_TYPE_NUMBER,
     NODE_TYPE_STRING,
     NODE_TYPE_OPERATOR,
+    NODE_TYPE_NAME,
 } from "./ast_node_types";
 import * as exceptions from "../exceptions";
 import { parseExpression1, parseExpression2 } from "./parse_expression";
@@ -74,10 +75,9 @@ export function parseNode(
 
     // Name
     else if (current.type === tokenTypes.TOKEN_TYPE_NAME) {
-        exceptions.raiseException(
-            exceptions.UNSUPPORTED_ERROR,
-            "Names are not supported yet."
-        );
+        node.type = NODE_TYPE_NAME;
+        node.value = new VariableReference(String(current.value));
+        tokenStreamWalker.forward();
     }
 
     // Blank line

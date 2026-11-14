@@ -7,3 +7,4 @@ export const NODE_TYPE_BOOLEAN = 6;
 export const NODE_TYPE_IF_STATEMENT = 7;
 
 export const NODE_TYPE_ASSIGNMENT_STATEMENT = 8;
+export const NODE_TYPE_NAME = 9;
