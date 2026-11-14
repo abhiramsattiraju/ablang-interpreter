@@ -8,3 +8,4 @@ export const TOKEN_TYPE_NEWLINE = 7;
 export const TOKEN_TYPE_COLON = 8;
 export const TOKEN_TYPE_INDENT = 9;
 export const TOKEN_TYPE_DEDENT = 10;
+export const TOKEN_TYPE_ASSIGNMENT = 11;

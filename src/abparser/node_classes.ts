@@ -30,3 +30,13 @@ export class IfStatement {
     }
 }
 
+
+export class AssignmentStatement {
+    name: string;
+    expression: Node;
+
+    constructor(name: string, expression: Node) {
+        this.name = name;
+        this.expression = expression;
+    }
+}

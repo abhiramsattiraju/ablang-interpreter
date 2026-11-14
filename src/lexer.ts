@@ -10,7 +10,7 @@ const NAME_PERMITTED_FIRST_CHARS =
 const NAME_ALL_PERMITTED_CHARS =
     "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const WHITESPACES = " \t\n\r";
-const KEYWORDS = ["print", "True", "False", "if"];
+const KEYWORDS = ["print", "True", "False", "if", "let"];
 
 // Takes ABLang source code in a string and returns a token stream or a list of
 // tokens.
@@ -41,6 +41,9 @@ export default function lex(source_code: string): Token[] {
             );
         } else if (current === '"') {
             lexString(sourceCodeWalker, tokenStream);
+        } else if (current === "=" && sourceCodeWalker.getNextElement() !== "=") {
+            tokenStream.push(new Token(tokenTypes.TOKEN_TYPE_ASSIGNMENT, "="));
+            sourceCodeWalker.forward();
         } else if (isStartOfOperator(current)) {
             lexOperator(sourceCodeWalker, tokenStream);
         } else if (NAME_PERMITTED_FIRST_CHARS.includes(current)) {

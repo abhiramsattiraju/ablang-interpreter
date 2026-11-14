@@ -7,6 +7,7 @@ import { parsePrintKeyword } from "./parse_print_keyword";
 import { parseIfKeyword } from "./parse_if_keyword";
 import { parseTrueKeyword } from "./parse_true_keyword";
 import { parseFalseKeyword } from "./parse_false_keyword";
+import { parseLetKeyword } from "./parse_let_keyword";
 
 export { parseNode };
 
@@ -45,6 +46,8 @@ export function parseKeyword(
         return parsePrintKeyword(tokenStreamWalker);
     } else if (current.value === "if") {
         return parseIfKeyword(tokenStreamWalker);
+    } else if (current.value === "let") {
+        return parseLetKeyword(tokenStreamWalker);
     } else if (current.value === "True") {
         return parseTrueKeyword(tokenStreamWalker);
     } else if (current.value === "False") {
