@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "ts-node src/ablang.ts",
-    "test": "jest --verbose"
+    "test": "jest --verbose --runInBand"
   },
   "keywords": [
     "ablang",
