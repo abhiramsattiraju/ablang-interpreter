@@ -29,4 +29,9 @@ export const PROGRAM_ABL_EXPECTED_OUTPUT =
     "True\n" +
     "False\n" +
     "\n\nHello\n\nFriends\n\n\n" +
-    "This should execute.\n";
+    "This should execute.\n" +
+    "scope ok\n" +
+    "32.5\n" +
+    "28.5\n" +
+    "7\n" +
+    "10\n";
