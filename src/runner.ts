@@ -12,33 +12,61 @@ import {
     VariableReference,
 } from "./abparser/node_classes";
 
-export type Environment = Map<string, any>;
+export class Scope extends Map<string, any> {
+    parent: Scope | null;
 
-// Run an ABLang AST. Variables live in `environment`, which is shared with
-// nested blocks.
+    constructor(parent: Scope | null = null, entries?: Iterable<[string, any]>) {
+        super(entries);
+        this.parent = parent;
+    }
+
+    override has(key: string): boolean {
+        return super.has(key) || (this.parent ? this.parent.has(key) : false);
+    }
+
+    override get(key: string): any {
+        if (super.has(key)) {
+            return super.get(key);
+        }
+        return this.parent ? this.parent.get(key) : undefined;
+    }
+}
+
+export type Environment = Scope;
+
+// Run an ABLang AST. Variables are looked up via the current lexical scope and
+// its parent scopes, while assignments write to the current block scope.
 export default function run(
     ast: Node[],
-    environment: Environment = new Map()
+    environment: Environment = new Map() as Scope
 ): void {
+    const scope = environment instanceof Scope
+        ? environment
+        : (() => {
+            Object.setPrototypeOf(environment, Scope.prototype);
+            (environment as Scope).parent = null;
+            return environment as Scope;
+        })();
+
     ast.forEach((node) => {
         if (node.type === NODE_TYPE_PRINT_STATEMENT) {
-            let result = evaluate(node.value.value, environment);
+            let result = evaluate(node.value.value, scope);
             if (typeof result === "boolean") {
                 result = printBoolean(result);
             }
             console.log(result);
         } else if (node.type === NODE_TYPE_IF_STATEMENT) {
             const ifStmt = node.value as IfStatement;
-            const conditionResult = evaluate(ifStmt.condition.value, environment);
+            const conditionResult = evaluate(ifStmt.condition.value, scope);
             if (conditionResult) {
-                run(ifStmt.body, environment);
+                run(ifStmt.body, new Scope(scope));
             }
         } else if (node.type === NODE_TYPE_ASSIGNMENT_STATEMENT) {
             const assignment = node.value as AssignmentStatement;
             // The expression is evaluated dynamically, at run time.
-            environment.set(
+            scope.set(
                 assignment.name,
-                evaluate(assignment.expression.value, environment)
+                evaluate(assignment.expression.value, scope)
             );
         } else {
             exceptions.raiseException(
